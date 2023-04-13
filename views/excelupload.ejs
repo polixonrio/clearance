@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Upload Excel File</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-image: url("/images/college.png");
+        background-size: cover;
+      }
+      h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        color: #444444;
+        margin-top: 50px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+      }
+      form {
+        margin: 0 auto;
+        width: 50%;
+        padding: 20px;
+        background-color: #ffffff;
+        box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+        border-radius: 10px;
+      }
+      input[type=file] {
+        margin: 10px 0;
+        font-size: 1.2rem;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      }
+      input[type=submit] {
+        display: block;
+        margin: 20px auto 0;
+        font-size: 1.2rem;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #4CAF50;
+        color: #ffffff;
+        text-align: center;
+        text-decoration: none;
+        box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        transition: background-color 0.3s ease-in-out;
+      }
+      input[type=submit]:hover {
+        background-color: #3e8e41;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Upload Excel File</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="myfile">
+      <input type="submit" value="Upload File">
+    </form>
+  </body>
+</html>
