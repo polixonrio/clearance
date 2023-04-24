@@ -174,14 +174,9 @@ app.get("/studentupdate", function (req, res) {
   res.render("studentupdate", { message: req.flash("error") });
 });
 
-
-
-
-
-
-
-
-
+app.get('/studentpagelogin', function(req, res) {
+  res.render('studentlogin',{ message: req.flash('error') });
+});
 
 
 
@@ -623,7 +618,20 @@ app.post("/upload", (req, res) => {
 // app.get('/images/logo.png', function(req, res) {
 //   res.render('logo.png');
 // });
-
+app.post('/adminexcelredirect', function(req, res ,next) {
+  
+  // Need to make authentication currently redirecting after adminlogin to excelupload
+  const username = req.body.username;
+  const password = req.body.password;
+  if(username === 'admin' && password === 'admin'){
+    res.redirect('/excelupload');
+  }
+  else{
+    res.redirect('/adminlogin');
+  }
+            
+     
+  });
 //Anshuman Codes end
 
 
