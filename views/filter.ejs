@@ -14,10 +14,10 @@
                 <h3 class="mb-3"><%= user.username %></h3>
                 <h3 class="mb-3"><%= user.id %></h3>
 
-                <form method="POST" action="/students" id="filter-form">
+                <form method="POST" action="/filter" id="filter-form">
                     <div class="mb-3">
                         <label for="batch" class="form-label">Branch</label>
-                        <select name="batch" class="form-select" aria-label="Batch" required>
+                        <select name="batch" class="form-select" aria-label="Batch" required >
                             <option value="">Select batch</option>
                             <% Branches.forEach(function(Branch) { %>
                             <option value="<%= Branch %>"><%= Branch %></option>
@@ -26,7 +26,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="Semester" class="form-label">Semester</label>
-                        <select name="Semester" class="form-select" aria-label="Semester" required>
+                        <select name="Semester" class="form-select" aria-label="Semester" >
                             <option value="">Select Semester</option>
                             <% Semesters.forEach(function(Semester) { %>
                             <option value="<%= Semester %>"><%= Semester %></option>
@@ -35,7 +35,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="Course" class="form-label">Course</label>
-                        <select name="Course" class="form-select" aria-label="Course" required>
+                        <select name="Course" class="form-select" aria-label="Course" >
                             <option value="">Select Course</option>
                             <% Courses.forEach(function(Course) { %>
                             <option value="<%= Course %>"><%= Course %></option>
@@ -44,7 +44,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="Section" class="form-label">Section</label>
-                        <select name="Section" class="form-select" aria-label="Section" required>
+                        <select name="Section" class="form-select" aria-label="Section" >
                             <option value="">Select Section</option>
                             <% Sections.forEach(function(Section) { %>
                             <option value="<%= Section %>"><%= Section %></option>
@@ -53,7 +53,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="Session" class="form-label">Session</label>
-                        <select name="Session" class="form-select" aria-label="Session" required>
+                        <select name="Session" class="form-select" aria-label="Session" >
                             <option value="">Select Session</option>
                             <% Sessions.forEach(function(Session) { %>
                             <option value="<%= Session %>"><%= Session %></option>

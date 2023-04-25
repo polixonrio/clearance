@@ -49,7 +49,7 @@ passportSecond.use(
   "local-second",
   new LocalStrategy((username, password, done) => {
     mysqlx.query(
-      "SELECT * FROM users WHERE username = ? AND password = ?",
+      "SELECT * FROM adminusers WHERE username = ? AND password = ?",
       [username, password],
       (err, results) => {
         if (err) return done(err);

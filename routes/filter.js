@@ -31,8 +31,8 @@ let mysqlx = mysql.createConnection({
 
 
 
-router.get("/", function (req, res) {
-    const userId = req.query.username;
+  router.get("/", function (req, res) {
+    const userId = req.user;
     // console.log(userId);
     // Retrieve batches from the batches table
     mysqlx.query(
@@ -46,7 +46,7 @@ router.get("/", function (req, res) {
   
         const Branches = branchRows.map((row) => row.Branch);
   
-        // Retrieve departments from the departments table
+        // Retrieve courses from the students table
         mysqlx.query(
           "SELECT DISTINCT Course FROM students",
           function (err, courseRows, fields) {
@@ -56,9 +56,9 @@ router.get("/", function (req, res) {
               return;
             }
   
-            const Courses = courseRows.map((row) => row.semester);
+            const Courses = courseRows.map((row) => row.Course);
   
-            // Retrieve semesters from the semesters table
+            // Retrieve semesters from the students table
             mysqlx.query(
               "SELECT DISTINCT Semester FROM students",
               function (err, semRows, fields) {
@@ -68,9 +68,9 @@ router.get("/", function (req, res) {
                   return;
                 }
   
-                const Semesters = semRows.map((row) => row.department);
+                const Semesters = semRows.map((row) => row.Semester);
   
-                // Retrieve sections from the sections table
+                // Retrieve sessions from the students table
                 mysqlx.query(
                   "SELECT DISTINCT Session FROM students",
                   function (err, sesRows, fields) {
@@ -80,8 +80,9 @@ router.get("/", function (req, res) {
                       return;
                     }
   
-                    const Sessions = sesRows.map((row) => row.section);
+                    const Sessions = sesRows.map((row) => row.Session);
   
+                    // Retrieve sections from the students table
                     mysqlx.query(
                       "SELECT DISTINCT Section FROM students",
                       function (err, secRows, fields) {
@@ -91,8 +92,8 @@ router.get("/", function (req, res) {
                           return;
                         }
   
-                        const Sections = secRows.map((row) => row.section);
-  
+                        const Sections = secRows.map((row) => row.Section);
+                        console.log(Semesters);
                         res.render("filter", {
                           Branches: Branches,
                           Semesters: Semesters,
@@ -112,4 +113,5 @@ router.get("/", function (req, res) {
       }
     );
   });
+  
   module.exports = router;

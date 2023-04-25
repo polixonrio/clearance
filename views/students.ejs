@@ -1,78 +1,99 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Students</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
     <style>
-        th, td {
-            text-align: center;
-        }
+      th,
+      td {
+        text-align: center;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <h1 class="text-center mb-4">Students</h1>
-                <div class="col text-center justify-content-center">
-                  <a class="btn btn-primary text-center mb-2" href="/logout">Logout</a>
-                </div>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">rno</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">batch</th>
-                            <th scope="col">semester</th>
-                            <th scope="col">department</th>
-                            <th scope="col">section</th>
-                            <th scope="col">verification</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if (typeof students !== 'undefined' && students.length > 0) { %>
-                            <% students.forEach(function(student) { %>
-                              <tr>
-                                <td><%= student.rno %></td>
-                                <td><%= student.name %></td>
-                                <td><%= student.batch %></td>
-                                <td><%= student.semester %></td>
-                                <td><%= student.department %></td>
-                                <td><%= student.section %></td>
-                                <td>   <% if (student.hod = "TRUE"  || student.canteen = "TRUE" || student.sports = "TRUE") { %>
-                                      VERIFIED
-                                
-                                  <% } else { %>
-                                     UNVERIFIED
-                              <% } %>
-                                
-                                </td>
-                                <td>
-                                  <% if (student.library || student.canteen || student.sports || student.accounts || student.hod) { %>
-                                    <form action="/students/<%= student.rno %>/unverify" method="POST">
-                                      <button type="submit" class="btn btn-danger btn-sm">Unverify</button>
-                                    </form>
-                                  <% } else { %>
-                                    <form action="/students/<%= student.rno %>/verify" method="POST">
-                                      <button type="submit" class="btn btn-success btn-sm">Verify</button>
-                                    </form>
-                                  <% } %>
-                                </td>
-                              </tr>
-                            <% }); %>
-                          <% } else { %>
-                            <tr>
-                                <td colspan="7">No students found.</td>
-                            </tr>
-                          <% } %> 
-                    </tbody>
-                </table>
-            </div>
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+          <h1 class="text-center mb-4">Students</h1>
+          <div class="col text-center justify-content-center">
+            <a class="btn btn-primary text-center mb-2" href="/logout"
+              >Logout</a
+            >
+          </div>
+          <%= students %>
+
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">rno</th>
+                <th scope="col">Name</th>
+                <th scope="col">batch</th>
+                <th scope="col">semester</th>
+                <th scope="col">department</th>
+                <th scope="col">section</th>
+                <th scope="col">verification</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (typeof students !== 'undefined' && students.length > 0) {
+              %> <% students.forEach(function(student) { %>
+              <tr>
+                <td><%= student.Registration_Number %></td>
+                <td><%= student.Name %></td>
+                <td><%= student.Course %></td>
+                <td><%= student.Semester %></td>
+                <td><%= student.Branch %></td>
+                <td><%= student.Section %></td>
+                <td>
+                  <% if (student.hod == "TRUE" || student.canteen == "TRUE" ||
+                  student.sports == "TRUE") { %> VERIFIED <% } else { %>
+                  UNVERIFIED <% } %>
+                </td>
+                <td>
+                  <% if (student.library || student.canteen || student.sports ||
+                  student.accounts || student.hod) { %>
+                  <form
+                    action="/students/<%= student.Registration_Number %>/unverify"
+                    method="POST"
+                  >
+                    <button type="submit" class="btn btn-danger btn-sm">
+                      Unverify
+                    </button>
+                  </form>
+                  <% } else { %>
+                  <form
+                    action="/students/<%= student.Registration_Number %>/verify"
+                    method="POST"
+                  >
+                    <button type="submit" class="btn btn-success btn-sm">
+                      Verify
+                    </button>
+                  </form>
+                  <% } %>
+                </td>
+              </tr>
+              <% }); %> <% } else { %>
+              <tr>
+                <td colspan="7">No students found.</td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+      integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

@@ -18,13 +18,12 @@ const app = express();
 const port = 8089;
 
 const adminlogin = require("./routes/adminlogin");
-const filter = require("./routes/filter");
+// const filter = require("./routes/filter");
+// const login = require("./routes/login");
 
-
-app.use('/adminlogin', adminlogin);
-app.use('/filter', filter);
-
-
+app.use("/adminlogin", adminlogin);
+// app.use('/filter', filter);
+// app.use('/login', login);
 
 let mysqlx = mysql.createConnection({
   host: "localhost",
@@ -50,11 +49,14 @@ app.use(express.json());
 
 app.set("view engine", "ejs");
 
-app.use(session({ cookie: { maxAge: 60000 }, 
-  secret: 'woot',
-  resave: false, 
-  saveUninitialized: false}));
-
+app.use(
+  session({
+    cookie: { maxAge: 60000 },
+    secret: "woot",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 const passportFirst = require("passport");
 app.use("/studentlogin", passportFirst.initialize());
@@ -123,7 +125,6 @@ app.post("/studentupdate", function (req, res) {
   res.render("studentupdate", { message: req.flash("error") });
 });
 
-
 app.get("/studentlogin", function (req, res) {
   res.render("studentlogin", { message: req.flash("error") });
 });
@@ -184,30 +185,6 @@ app.get("/login", function (req, res) {
   res.render("login", { message: req.flash("error") });
 });
 
-// app.post("/login", function (req, res, next) {
-//   passport.authenticate("login", function (err, user, info) {
-//     if (err) {
-//       return next(err);
-//     }
-//     if (!user) {
-//       req.flash("error", info.message);
-//       return res.redirect("/login");
-      
-//     }
-//     req.logIn(user, function (err) {
-//       if (err) {
-//         return next(err);
-//       }
-
-//       req.session.username = req.user.username;
-//       const usern = req.user.username;
-
-//       res.render('filter', { user }); 
-//     });
-//   })(req, res, next);
-// });
-
-
 app.post("/login", function (req, res, next) {
   passport.authenticate("login", function (err, user, info) {
     if (err) {
@@ -221,14 +198,96 @@ app.post("/login", function (req, res, next) {
       if (err) {
         return next(err);
       }
-      
-      // Remove this line: req.session.username = req.user.username;
-      // Instead, pass the user object as a parameter in the URL
-      res.redirect(`/filter?username=${req.user.username}`);
+
+      req.session.username = req.user.username;
+
+      res.redirect("/filter");
     });
   })(req, res, next);
 });
 
+app.get("/filter", function (req, res) {
+  const userId = req.user;
+  // console.log(userId);
+  // Retrieve batches from the batches table
+  mysqlx.query(
+    "SELECT DISTINCT Branch FROM students",
+    function (err, branchRows, fields) {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Internal Server Error");
+        return;
+      }
+
+      const Branches = branchRows.map((row) => row.Branch);
+
+      // Retrieve courses from the students table
+      mysqlx.query(
+        "SELECT DISTINCT Course FROM students",
+        function (err, courseRows, fields) {
+          if (err) {
+            console.log(err);
+            res.status(500).send("Internal Server Error");
+            return;
+          }
+
+          const Courses = courseRows.map((row) => row.Course);
+
+          // Retrieve semesters from the students table
+          mysqlx.query(
+            "SELECT DISTINCT Semester FROM students",
+            function (err, semRows, fields) {
+              if (err) {
+                console.log(err);
+                res.status(500).send("Internal Server Error");
+                return;
+              }
+
+              const Semesters = semRows.map((row) => row.Semester);
+
+              // Retrieve sessions from the students table
+              mysqlx.query(
+                "SELECT DISTINCT Session FROM students",
+                function (err, sesRows, fields) {
+                  if (err) {
+                    console.log(err);
+                    res.status(500).send("Internal Server Error");
+                    return;
+                  }
+
+                  const Sessions = sesRows.map((row) => row.Session);
+
+                  // Retrieve sections from the students table
+                  mysqlx.query(
+                    "SELECT DISTINCT Section FROM students",
+                    function (err, secRows, fields) {
+                      if (err) {
+                        console.log(err);
+                        res.status(500).send("Internal Server Error");
+                        return;
+                      }
+
+                      const Sections = secRows.map((row) => row.Section);
+                      console.log(Semesters);
+                      res.render("filter", {
+                        Branches: Branches,
+                        Semesters: Semesters,
+                        Sessions: Sessions,
+                        Sections: Sections,
+                        Courses: Courses,
+                        user: userId,
+                      });
+                    }
+                  );
+                }
+              );
+            }
+          );
+        }
+      );
+    }
+  );
+});
 
 app.get("/logout", function (req, res) {
   req.session.destroy(function (err) {
@@ -240,8 +299,7 @@ app.get("/logout", function (req, res) {
   });
 });
 
-
-app.post("/students", function (req, res) {
+app.post("/filter", function (req, res) {
   const userId = req.session.username;
 
   // const users = req.body.username;
@@ -278,7 +336,7 @@ app.post("/students", function (req, res) {
     function (err, rows, fields) {
       if (err) {
         console.log(err);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send("Internal Server Error 1");
         return;
       }
 
@@ -292,6 +350,7 @@ app.post("/students", function (req, res) {
 
       // Construct SELECT query with specified access rights
       const selectCols = accessRights.join(",");
+      console.log(selectCols);
       // const queryx = `SELECT ${selectCols} FROM students`;
       let query = `SELECT ${selectCols} FROM students WHERE `;
       if (Registration_Number)
@@ -299,7 +358,7 @@ app.post("/students", function (req, res) {
       // if (Name) query += " AND semester = " + mysql.escape(Name);
       if (Roll_Number)
         query += " AND Roll_Number = " + mysql.escape(Roll_Number);
-      if (Course) query += " AND Course = " + mysql.escape(Course);
+      if (Course) query += " Course = " + mysql.escape(Course);
       if (Branch) query += " AND Branch = " + mysql.escape(Branch);
       if (Semester) query += " AND Semester = " + mysql.escape(Semester);
       if (Session) query += " AND Session = " + mysql.escape(Session);
@@ -314,8 +373,13 @@ app.post("/students", function (req, res) {
           return;
         }
 
+        const students1 = rows.map((row) => {
+          return Object.assign({}, row);
+        });
+
+        console.log(students1);
         res.render("students", {
-          students: rows,
+          students: students1,
           user: userId,
         });
       });
@@ -323,58 +387,58 @@ app.post("/students", function (req, res) {
   );
 });
 
-app.get("/students", function (req, res) {
-  // req.session.batch = req.body.batch ;
-  // req.session.semester = req.body.semester ;
-  // req.session.department = req.body.department ;
-  // req.session.section = req.body.section ;
+// app.get("/students", function (req, res) {
+//   // req.session.batch = req.body.batch ;
+//   // req.session.semester = req.body.semester ;
+//   // req.session.department = req.body.department ;
+//   // req.session.section = req.body.section ;
 
-  const batch = req.session.batch;
-  const semester = req.session.semester;
-  const department = req.session.department;
-  const section = req.session.section;
+//   const batch = req.session.batch;
+//   const semester = req.session.semester;
+//   const department = req.session.department;
+//   const section = req.session.section;
 
-  const userId = req.session.username;
-  mysqlx.query(
-    "SELECT access_rights FROM users WHERE username = ?",
-    [userId],
-    function (err, rows, fields) {
-      if (err) {
-        console.log(err);
-        res.status(500).send("Internal Server Error");
-        return;
-      }
+//   const userId = req.session.username;
+//   mysqlx.query(
+//     "SELECT access_rights FROM users WHERE username = ?",
+//     [userId],
+//     function (err, rows, fields) {
+//       if (err) {
+//         console.log(err);
+//         res.status(500).send("Internal Server Error");
+//         return;
+//       }
 
-      if (rows.length === 0) {
-        // User does not have any access rights
-        res.status(401).send("Unauthorized");
-        return;
-      }
+//       if (rows.length === 0) {
+//         // User does not have any access rights
+//         res.status(401).send("Unauthorized");
+//         return;
+//       }
 
-      const accessRights = rows[0].access_rights.split(",");
+//       const accessRights = rows[0].access_rights.split(",");
 
-      // Construct SELECT query with specified access rights
-      const selectCols = accessRights.join(",");
-      // const queryx = `SELECT  FROM students`;
+//       // Construct SELECT query with specified access rights
+//       const selectCols = accessRights.join(",");
+//       // const queryx = `SELECT  FROM students`;
 
-      let query = `SELECT ${selectCols} FROM students WHERE `;
-      if (batch) query += " batch = " + mysql.escape(batch);
-      if (semester) query += " AND semester = " + mysql.escape(semester);
-      if (department) query += " AND department = " + mysql.escape(department);
-      if (section) query += " AND section = " + mysql.escape(section);
+//       let query = `SELECT ${selectCols} FROM students WHERE `;
+//       if (batch) query += " batch = " + mysql.escape(batch);
+//       if (semester) query += " AND semester = " + mysql.escape(semester);
+//       if (department) query += " AND department = " + mysql.escape(department);
+//       if (section) query += " AND section = " + mysql.escape(section);
 
-      // Execute SELECT query
-      mysqlx.query(query, function (err, srows, fields) {
-        if (err) {
-          console.log(err);
-          res.status(500).send("Internal Server Error");
-          return;
-        }
-        res.render("students", { students: srows });
-      });
-    }
-  );
-});
+//       // Execute SELECT query
+//       mysqlx.query(query, function (err, srows, fields) {
+//         if (err) {
+//           console.log(err);
+//           res.status(500).send("Internal Server Error");
+//           return;
+//         }
+//         res.render("students", { students: srows });
+//       });
+//     }
+//   );
+// });
 
 app.post("/students/:Registration_Number/verify", function (req, res) {
   // console.log(req.params);
@@ -409,14 +473,12 @@ app.post("/students/:Registration_Number/unverify", function (req, res) {
   });
 });
 
-
 //Anshuman Codes start
 
 // making route to page to generate and download pdf
 app.get("/formgenerate", function (req, res) {
   res.render("formgenerate");
 });
-
 
 app.get("/excelupload", (req, res) => {
   res.render("excelupload");
@@ -480,8 +542,6 @@ app.post("/upload", (req, res) => {
     });
   });
 });
-
-
 
 app.post("/adminexcelredirect", function (req, res, next) {
   // Need to make authentication currently redirecting after adminlogin to excelupload
