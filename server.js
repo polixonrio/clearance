@@ -121,8 +121,50 @@ app.post("/studentlogin", function (req, res, next) {
   })(req, res, next);
 });
 
-app.post("/studentupdate", function (req, res) {
-  res.render("studentupdate", { message: req.flash("error") });
+// app.post("/studentupdate", function (req, res) {
+//   res.render("studentupdate", { message: req.flash("error") });
+// });
+
+app.get("/studentupdate", function (req, res) {
+  // mysqlx.query(
+  //   "SELECT * FROM  where ",
+  //   function (err, secRows, fields) {
+  //     if (err) {
+  //       console.log(err);
+  //       res.status(500).send("Internal Server Error");
+  //       return;
+  //     }
+
+  //     const Sections = secRows.map((row) => row.Section);
+  //     console.log(Semesters);
+  //     res.render("filter", {
+
+  //       user: userId,
+  //     });
+  //   }
+  // );
+
+  mysqlx.query(
+    "SELECT * FROM students WHERE Email = ?",
+    [req.session.username],
+    function (err, crows, fields) {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Internal Server Error");
+        return;
+      }
+      const scrows = crows.map((row) => {
+        return Object.assign({}, row);
+      });
+      // const scrows = crows.map((row) => row.Branch);
+      const mol = scrows[0];
+      console.log(mol);
+
+      res.render("studentupdate", {
+        status: scrows[0],
+      });
+    }
+  );
 });
 
 app.get("/studentlogin", function (req, res) {
@@ -386,59 +428,6 @@ app.post("/filter", function (req, res) {
     }
   );
 });
-
-// app.get("/students", function (req, res) {
-//   // req.session.batch = req.body.batch ;
-//   // req.session.semester = req.body.semester ;
-//   // req.session.department = req.body.department ;
-//   // req.session.section = req.body.section ;
-
-//   const batch = req.session.batch;
-//   const semester = req.session.semester;
-//   const department = req.session.department;
-//   const section = req.session.section;
-
-//   const userId = req.session.username;
-//   mysqlx.query(
-//     "SELECT access_rights FROM users WHERE username = ?",
-//     [userId],
-//     function (err, rows, fields) {
-//       if (err) {
-//         console.log(err);
-//         res.status(500).send("Internal Server Error");
-//         return;
-//       }
-
-//       if (rows.length === 0) {
-//         // User does not have any access rights
-//         res.status(401).send("Unauthorized");
-//         return;
-//       }
-
-//       const accessRights = rows[0].access_rights.split(",");
-
-//       // Construct SELECT query with specified access rights
-//       const selectCols = accessRights.join(",");
-//       // const queryx = `SELECT  FROM students`;
-
-//       let query = `SELECT ${selectCols} FROM students WHERE `;
-//       if (batch) query += " batch = " + mysql.escape(batch);
-//       if (semester) query += " AND semester = " + mysql.escape(semester);
-//       if (department) query += " AND department = " + mysql.escape(department);
-//       if (section) query += " AND section = " + mysql.escape(section);
-
-//       // Execute SELECT query
-//       mysqlx.query(query, function (err, srows, fields) {
-//         if (err) {
-//           console.log(err);
-//           res.status(500).send("Internal Server Error");
-//           return;
-//         }
-//         res.render("students", { students: srows });
-//       });
-//     }
-//   );
-// });
 
 app.post("/students/:Registration_Number/verify", function (req, res) {
   // console.log(req.params);

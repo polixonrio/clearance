@@ -4,7 +4,92 @@
 	<title>Logged In User Status</title>
 </head>
 <body>
-	<h1>Welcome Anshuman</h1>
+
+
+
+	<h1>Welcome <%= status.Name %></h1>
+
+	<h1>Student Status</h1>
+
+<table>
+  <tr>
+    <td>ID:</td>
+    <td><%= status.ID %></td>
+  </tr>
+  <tr>
+    <td>Registration Number:</td>
+    <td><%= status.Registration_Number %></td>
+  </tr>
+  <tr>
+    <td>Name:</td>
+    <td><%= status.Name %></td>
+  </tr>
+  <tr>
+    <td>Roll Number:</td>
+    <td><%= status.Roll_Number %></td>
+  </tr>
+  <tr>
+    <td>Branch:</td>
+    <td><%= status.Branch %></td>
+  </tr>
+  <tr>
+    <td>Course:</td>
+    <td><%= status.Course %></td>
+  </tr>
+  <tr>
+    <td>Semester:</td>
+    <td><%= status.Semester %></td>
+  </tr>
+  <tr>
+    <td>Section:</td>
+    <td><%= status.Section %></td>
+  </tr>
+  <tr>
+    <td>Session:</td>
+    <td><%= status.Session %></td>
+  </tr>
+  <tr>
+    <td>Year:</td>
+    <td><%= status.Year %></td>
+  </tr>
+  <tr>
+    <td>Mobile Number:</td>
+    <td><%= status.Mobile_Number %></td>
+  </tr>
+  <tr>
+    <td>Email:</td>
+    <td><%= status.Email %></td>
+  </tr>
+  <tr>
+    <td>Accounts Verified:</td>
+    <td><%= status.Accounts_Verified %></td>
+  </tr>
+  <tr>
+    <td>Library Verified:</td>
+    <td><%= status.Library_Verified %></td>
+  </tr>
+  <tr>
+    <td>Training and Placement Verified:</td>
+    <td><%= status['Training_And_Placement Verified'] %></td>
+  </tr>
+  <tr>
+    <td>Alumni Cell Verified:</td>
+    <td><%= status.Alumni_Cell_Verified %></td>
+  </tr>
+  <tr>
+    <td>Project Verified:</td>
+    <td><%= status.Project_Verified %></td>
+  </tr>
+  <tr>
+    <td>Internship Verified:</td>
+    <td><%= status.Internship_Verified %></td>
+  </tr>
+  <tr>
+    <td>HOD Verified:</td>
+    <td><%= status.HOD_Verified %></td>
+  </tr>
+</table>
+
 	<form method="GET" action="/formgenerate">
 		<button type="submit" >Check status</button>
 	</form>
