@@ -17,10 +17,12 @@ const path = require("path");
 const app = express();
 const port = 8089;
 
-const adminlogin = require("./routes/adminlogin")
+const adminlogin = require("./routes/adminlogin");
+const filter = require("./routes/filter");
 
 
-app.use('/adminlogin', adminlogin)
+app.use('/adminlogin', adminlogin);
+app.use('/filter', filter);
 
 
 
@@ -53,68 +55,6 @@ app.use(session({ cookie: { maxAge: 60000 },
   resave: false, 
   saveUninitialized: false}));
 
-// const passportSecond = require("passport");
-// app.use("/adminlogin", passportSecond.initialize());
-// app.use("/adminlogin", passportSecond.session());
-// app.use(flash());
-
-// passportSecond.use(
-//   "local-second",
-//   new LocalStrategy((username, password, done) => {
-//     mysqlx.query(
-//       "SELECT * FROM users WHERE username = ? AND password = ?",
-//       [username, password],
-//       (err, results) => {
-//         if (err) return done(err);
-//         if (results.length === 0) {
-//           return done(null, false, {
-//             message: "Incorrect username or password",
-//           });
-//         }
-//         const user = results[0];
-//         return done(null, user);
-//       }
-//     );
-//   })
-// );
-
-// // Configure Passport serializer/deserializer functions for second view
-// passportSecond.serializeUser((user, done) => {
-//   done(null, user.id);
-// });
-
-// passportSecond.deserializeUser((id, done) => {
-//   mysqlx.query(
-//     "SELECT * FROM adminusers WHERE id = ?",
-//     [id],
-//     (err, results) => {
-//       if (err) return done(err);
-//       const user = results[0];
-//       return done(null, user);
-//     }
-//   );
-// });
-
-// app.post("/adminlogin", function (req, res, next) {
-//   passport.authenticate("local-second", function (err, user, info) {
-//     if (err) {
-//       return next(err);
-//     }
-//     if (!user) {
-//       req.flash("error", info.message);
-//       return res.redirect("/adminlogin");
-//     }
-//     req.logIn(user, function (err) {
-//       if (err) {
-//         return next(err);
-//       }
-
-//       req.session.username = req.user.username;
-
-//       res.redirect("/excelupload");
-//     });
-//   })(req, res, next);
-// });
 
 const passportFirst = require("passport");
 app.use("/studentlogin", passportFirst.initialize());
@@ -183,9 +123,6 @@ app.post("/studentupdate", function (req, res) {
   res.render("studentupdate", { message: req.flash("error") });
 });
 
-app.get("/studentupdate", function (req, res) {
-  res.render("studentupdate", { message: req.flash("error") });
-});
 
 app.get("/studentlogin", function (req, res) {
   res.render("studentlogin", { message: req.flash("error") });
@@ -247,6 +184,30 @@ app.get("/login", function (req, res) {
   res.render("login", { message: req.flash("error") });
 });
 
+// app.post("/login", function (req, res, next) {
+//   passport.authenticate("login", function (err, user, info) {
+//     if (err) {
+//       return next(err);
+//     }
+//     if (!user) {
+//       req.flash("error", info.message);
+//       return res.redirect("/login");
+      
+//     }
+//     req.logIn(user, function (err) {
+//       if (err) {
+//         return next(err);
+//       }
+
+//       req.session.username = req.user.username;
+//       const usern = req.user.username;
+
+//       res.render('filter', { user }); 
+//     });
+//   })(req, res, next);
+// });
+
+
 app.post("/login", function (req, res, next) {
   passport.authenticate("login", function (err, user, info) {
     if (err) {
@@ -260,13 +221,14 @@ app.post("/login", function (req, res, next) {
       if (err) {
         return next(err);
       }
-
-      req.session.username = req.user.username;
-
-      res.redirect("/filter");
+      
+      // Remove this line: req.session.username = req.user.username;
+      // Instead, pass the user object as a parameter in the URL
+      res.redirect(`/filter?username=${req.user.username}`);
     });
   })(req, res, next);
 });
+
 
 app.get("/logout", function (req, res) {
   req.session.destroy(function (err) {
@@ -278,87 +240,6 @@ app.get("/logout", function (req, res) {
   });
 });
 
-app.get("/filter", function (req, res) {
-  const userId = req.user;
-  // console.log(userId);
-  // Retrieve batches from the batches table
-  mysqlx.query(
-    "SELECT DISTINCT Branch FROM students",
-    function (err, branchRows, fields) {
-      if (err) {
-        console.log(err);
-        res.status(500).send("Internal Server Error");
-        return;
-      }
-
-      const Branches = branchRows.map((row) => row.Branch);
-
-      // Retrieve departments from the departments table
-      mysqlx.query(
-        "SELECT DISTINCT Course FROM students",
-        function (err, courseRows, fields) {
-          if (err) {
-            console.log(err);
-            res.status(500).send("Internal Server Error");
-            return;
-          }
-
-          const Courses = courseRows.map((row) => row.semester);
-
-          // Retrieve semesters from the semesters table
-          mysqlx.query(
-            "SELECT DISTINCT Semester FROM students",
-            function (err, semRows, fields) {
-              if (err) {
-                console.log(err);
-                res.status(500).send("Internal Server Error");
-                return;
-              }
-
-              const Semesters = semRows.map((row) => row.department);
-
-              // Retrieve sections from the sections table
-              mysqlx.query(
-                "SELECT DISTINCT Session FROM students",
-                function (err, sesRows, fields) {
-                  if (err) {
-                    console.log(err);
-                    res.status(500).send("Internal Server Error");
-                    return;
-                  }
-
-                  const Sessions = sesRows.map((row) => row.section);
-
-                  mysqlx.query(
-                    "SELECT DISTINCT Section FROM students",
-                    function (err, secRows, fields) {
-                      if (err) {
-                        console.log(err);
-                        res.status(500).send("Internal Server Error");
-                        return;
-                      }
-
-                      const Sections = secRows.map((row) => row.section);
-
-                      res.render("filter", {
-                        Branches: Branches,
-                        Semesters: Semesters,
-                        Sessions: Sessions,
-                        Sections: Sections,
-                        Courses: Courses,
-                        user: userId,
-                      });
-                    }
-                  );
-                }
-              );
-            }
-          );
-        }
-      );
-    }
-  );
-});
 
 app.post("/students", function (req, res) {
   const userId = req.session.username;
@@ -528,12 +409,6 @@ app.post("/students/:Registration_Number/unverify", function (req, res) {
   });
 });
 
-// app.get('/download', function(req, res) {
-//   const userId = req.user;
-// // console.log(userId);
-//   // Retrieve batches from the batches table
-//   res.render('download', { user: req.user });
-// });
 
 //Anshuman Codes start
 
@@ -541,9 +416,8 @@ app.post("/students/:Registration_Number/unverify", function (req, res) {
 app.get("/formgenerate", function (req, res) {
   res.render("formgenerate");
 });
-// app.get("/adminlogin", function (req, res) {
-//   res.render("adminlogin", { message: req.flash("error") });
-// });
+
+
 app.get("/excelupload", (req, res) => {
   res.render("excelupload");
 });
@@ -607,9 +481,8 @@ app.post("/upload", (req, res) => {
   });
 });
 
-// app.get('/images/logo.png', function(req, res) {
-//   res.render('logo.png');
-// });
+
+
 app.post("/adminexcelredirect", function (req, res, next) {
   // Need to make authentication currently redirecting after adminlogin to excelupload
   const username = req.body.username;
