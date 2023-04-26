@@ -121,29 +121,8 @@ app.post("/studentlogin", function (req, res, next) {
   })(req, res, next);
 });
 
-// app.post("/studentupdate", function (req, res) {
-//   res.render("studentupdate", { message: req.flash("error") });
-// });
-
 app.get("/studentupdate", function (req, res) {
-  // mysqlx.query(
-  //   "SELECT * FROM  where ",
-  //   function (err, secRows, fields) {
-  //     if (err) {
-  //       console.log(err);
-  //       res.status(500).send("Internal Server Error");
-  //       return;
-  //     }
-
-  //     const Sections = secRows.map((row) => row.Section);
-  //     console.log(Semesters);
-  //     res.render("filter", {
-
-  //       user: userId,
-  //     });
-  //   }
-  // );
-
+  console.log("req.session.username");
   mysqlx.query(
     "SELECT * FROM students WHERE Email = ?",
     [req.session.username],
@@ -344,6 +323,10 @@ app.get("/logout", function (req, res) {
 app.post("/filter", function (req, res) {
   const userId = req.session.username;
 
+  console.log(userId);
+
+
+
   // const users = req.body.username;
   const Registration_Number = req.body.Registration_Number;
   const Name = req.body.Name;
@@ -368,10 +351,6 @@ app.post("/filter", function (req, res) {
   req.session.Year = req.body.Year;
   req.session.Mobile_Number = req.body.Mobile_Number;
 
-  // console.log(userId);
-  // Construct SQL query to retrieve appropriate rows
-
-  // Retrieve access rights for current user from user_student_access table
   mysqlx.query(
     "SELECT access_rights FROM users WHERE username = ?",
     [userId],
@@ -429,13 +408,107 @@ app.post("/filter", function (req, res) {
   );
 });
 
+app.get("/students", authenticate, function (req, res) {
+
+
+
+
+  const userId = req.session.username;
+  console.log(userId);
+
+  const Registration_Number = req.session.Registration_Number;
+  const Name = req.session.Name;
+  const Roll_Number = req.session.Roll_Number;
+  const Course = req.session.Course;
+  const Branch = req.session.Branch;
+  const Semester = req.session.Semester;
+  const Section = req.session.Section;
+  const Session = req.session.Session;
+  const Year = req.session.Year;
+  const Mobile_Number = req.session.Mobile_Number;
+
+  mysqlx.query(
+    "SELECT access_rights FROM users WHERE username = ?",
+    [userId],
+    function (err, rows, fields) {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Internal Server Error 1");
+        return;
+      }
+
+      if (rows.length === 0) {
+        // User does not have any access rights
+        res.status(401).send("Unauthorized");
+        return;
+      }
+
+      const accessRights = rows[0].access_rights.split(",");
+
+      // Construct SELECT query with specified access rights
+      const selectCols = accessRights.join(",");
+      console.log(selectCols);
+
+      let query = `SELECT ${selectCols} FROM students WHERE `;
+      if (Registration_Number)
+        query += " Registration_Number = " + mysql.escape(Registration_Number);
+      if (Roll_Number)
+        query += " AND Roll_Number = " + mysql.escape(Roll_Number);
+      if (Course) query += " Course = " + mysql.escape(Course);
+      if (Branch) query += " AND Branch = " + mysql.escape(Branch);
+      if (Semester) query += " AND Semester = " + mysql.escape(Semester);
+      if (Session) query += " AND Session = " + mysql.escape(Session);
+      if (Year) query += " AND Year = " + mysql.escape(Year);
+      if (Section) query += " AND Section = " + mysql.escape(Section);
+      req.session.returnTo = req.originalUrl;
+
+      // Execute SELECT query
+      mysqlx.query(query, function (err, rows, fields) {
+        if (err) {
+          console.log(err);
+          res.status(500).send("Internal Server Error");
+          return;
+        }
+
+        const students1 = rows.map((row) => {
+          return Object.assign({}, row);
+        });
+        console.log("students22221");
+
+        console.log(students1);
+
+        res.render("students", {
+          students: students1,
+          user: userId,
+
+        });
+      });
+    }
+  );
+});
+
+function authenticate(req, res, next) {
+  if (req.session && req.session.username) {
+    return next();
+  } else {
+    res.redirect("/login");
+  }
+}
+
+app.get("/back", function (req, res) {
+  res.render("filter");
+});
+
+
 app.post("/students/:Registration_Number/verify", function (req, res) {
-  // console.log(req.params);
-  // console.log(req.session.username);
+
+
   const usertable = req.session.username;
+  console.log(req.session.username);
   const studentId = req.params.Registration_Number;
   const query = `UPDATE ${usertable} SET verification = "TRUE" WHERE Registration_Number = ?`;
   mysqlx.query(query, [studentId], function (err, result) {
+
     if (err) {
       console.log(err);
       res.status(500).send("Internal Server Error");
@@ -447,12 +520,17 @@ app.post("/students/:Registration_Number/verify", function (req, res) {
 
 app.post("/students/:Registration_Number/unverify", function (req, res) {
   // console.log(req.params);
+
+
+
   console.log(req.session.username);
   const usertable = req.session.username;
   const studentId = req.params.Registration_Number;
+  console.log(studentId);
   const query = `UPDATE ${usertable} SET verification = "FALSE" WHERE Registration_Number =  ?`;
   console.log(query);
   mysqlx.query(query, [studentId], function (err, result) {
+
     if (err) {
       console.log(err);
       res.status(500).send("Internal Server Error");
@@ -466,7 +544,35 @@ app.post("/students/:Registration_Number/unverify", function (req, res) {
 
 // making route to page to generate and download pdf
 app.get("/formgenerate", function (req, res) {
-  res.render("formgenerate");
+
+  const userId = req.session.username;
+  console.log(userId);
+
+  
+
+  mysqlx.query(
+    "SELECT * FROM students WHERE Email = ?",
+    [req.session.username],
+    function (err, crows, fields) {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Internal Server Error");
+        return;
+      }
+      const scrows = crows.map((row) => {
+        return Object.assign({}, row);
+      });
+      // const scrows = crows.map((row) => row.Branch);
+      const mol = scrows[0];
+      console.log(mol);
+
+      res.render("formgenerate", {
+        status: scrows[0],
+      });
+    }
+  );
+
+
 });
 
 app.get("/excelupload", (req, res) => {

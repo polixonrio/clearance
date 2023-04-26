@@ -108,13 +108,13 @@
                 <hr>
             </div>
 
-            <div class = "student">
-                <span id = "date"> Date : DD / MM / YYYY</span>
-                <h3 id ="clearance">STUDENT CLEARANCE CERTIFICATE</h3>
+            <div class="student">
+              <span id="date">Date: <%= new Date().toLocaleDateString('en-GB') %></span>
+              <h3 id="clearance">STUDENT CLEARANCE CERTIFICATE</h3>
             </div>
 
             <div class = "details">
-                <h4 id = "udet"> Mr/Ms "include name" was a student of IV "include degree" Section "include section" Roll No "include roll no" Registration Number "include reg no" Mobile Number "include mob no" and Appeared for "include summer winter and Year" examination . No Dues against him / her are as per following</h4>
+                <h4 id = "udet"> Mr/Ms <%= status.Name %> was a student of IV <%= status.Name %>  Section <%= status.Section %> Roll No <%= status.Roll_Number %> Registration Number <%= status.Registration_Number %> Mobile Number <%= status.Mobile_Number %> and Appeared for <%= status.Year %> examination . No Dues against him / her are as per following</h4>
             </div>
             <style type="text/css">
                 .tg  {border-collapse:collapse;border-spacing:0;}
@@ -137,37 +137,37 @@
                   <tr>
                     <td class="tg-0pky">1</td>
                     <td class="tg-0lax">Department HOD</td>
-                    <td class="tg-0lax"></td>
+                    <td class="tg-0lax"><%= status.HOD_Verified %></td>
                   </tr>
                   <tr>
                     <td class="tg-0pky"></td>
                     <td class="tg-0lax">Project Report Submitted</td>
-                    <td class="tg-0lax"></td>
+                    <td class="tg-0lax"><%= status.Project_Verified %></td>
                   </tr>
                   <tr>
                     <td class="tg-0pky"></td>
                     <td class="tg-0lax">Internship Report Submitted</td>
-                    <td class="tg-0lax"></td>
+                    <td class="tg-0lax"><%= status.Internship_Verified %></td>
                   </tr>
                   <tr>
                     <td class="tg-0pky">2</td>
                     <td class="tg-0lax">Accounts Department</td>
-                    <td class="tg-0lax"></td>
+                    <td class="tg-0lax"><%= status.Accounts_Verified %></td>
                   </tr>
                   <tr>
                     <td class="tg-0pky">3</td>
                     <td class="tg-0lax">Library Department</td>
-                    <td class="tg-0lax"></td>
+                    <td class="tg-0lax"><%= status.Library_Verified %></td>
                   </tr>
                   <tr>
                     <td class="tg-0pky">4</td>
                     <td class="tg-0lax">Training and Placement Department</td>
-                    <td class="tg-0lax"></td>
+                    <td class="tg-0lax"><%= status['Training_And_Placement Verified'] %></td>
                   </tr>
                   <tr>
                     <td class="tg-0pky">5</td>
                     <td class="tg-0lax">Alumni Cell</td>
-                    <td class="tg-0lax"></td>
+                    <td class="tg-0lax"><%= status.Alumni_Cell_Verified %></td>
                   </tr>
                 </tbody>
                 </table>

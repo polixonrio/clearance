@@ -26,19 +26,24 @@
             <a class="btn btn-primary text-center mb-2" href="/logout"
               >Logout</a
             >
+            <a class="btn btn-primary text-center mb-2" href="/filter"
+            >Back to Filter</a
+          >
           </div>
-          <%= students %>
 
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th scope="col">rno</th>
+                <th scope="col">Registration_Number</th>
                 <th scope="col">Name</th>
-                <th scope="col">batch</th>
-                <th scope="col">semester</th>
-                <th scope="col">department</th>
-                <th scope="col">section</th>
-                <th scope="col">verification</th>
+                <th scope="col">Course</th>
+                <th scope="col">Semester</th>
+                <th scope="col">Branch</th>
+                <th scope="col">Section</th>
+                <th scope="col">Session</th>
+                <th scope="col">Year</th>
+                <th scope="col">Mobile_Number</th>
+                <th scope="col">Verification Status</th>
               </tr>
             </thead>
             <tbody>
@@ -51,14 +56,12 @@
                 <td><%= student.Semester %></td>
                 <td><%= student.Branch %></td>
                 <td><%= student.Section %></td>
+                <td><%= student.Session %></td>
+                <td><%= student.Year %></td>
+                <td><%= student.Mobile_Number %></td>
+                <td><%= student.Library_Verified %></td>
                 <td>
-                  <% if (student.hod == "TRUE" || student.canteen == "TRUE" ||
-                  student.sports == "TRUE") { %> VERIFIED <% } else { %>
-                  UNVERIFIED <% } %>
-                </td>
-                <td>
-                  <% if (student.library || student.canteen || student.sports ||
-                  student.accounts || student.hod) { %>
+                  <% if (student.Library_Verified == "TRUE") { %>
                   <form
                     action="/students/<%= student.Registration_Number %>/unverify"
                     method="POST"
@@ -67,6 +70,7 @@
                       Unverify
                     </button>
                   </form>
+
                   <% } else { %>
                   <form
                     action="/students/<%= student.Registration_Number %>/verify"
