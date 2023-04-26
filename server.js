@@ -504,41 +504,92 @@ app.post("/students/:Registration_Number/verify", function (req, res) {
 
 
   const usertable = req.session.username;
-  console.log(req.session.username);
+  // console.log(req.session.username);
   const studentId = req.params.Registration_Number;
-  const query = `UPDATE ${usertable} SET verification = "TRUE" WHERE Registration_Number = ?`;
-  mysqlx.query(query, [studentId], function (err, result) {
+  const queryx = `SELECT user_tablename FROM users WHERE username = '${usertable}'  `
+  mysqlx.query(queryx, function (err, rows, fields) {
 
     if (err) {
       console.log(err);
       res.status(500).send("Internal Server Error");
       return;
     }
-    res.redirect("/students");
+    const usertablename = rows.map((row) => {
+      return Object.assign({}, row);
+    });
+    console.log('lmso');
+    console.log(usertablename[0].user_tablename);
+    req.session.usertablename = usertablename[0].user_tablename;
+
+    const query = `UPDATE ${req.session.usertablename} SET verification = "TRUE" WHERE Registration_Number = ?`;
+
+    mysqlx.query(query, [studentId], function (err, rows, fields) {
+  
+      if (err) {
+        console.log(err);
+        res.status(500).send("Internal Server Error");
+        return;
+      }
+      res.redirect("/students");
+    });
   });
+  // console.log('lmsoaa');
+
+  // console.log(req.session.usertablename);
+ 
 });
+
+
 
 app.post("/students/:Registration_Number/unverify", function (req, res) {
-  // console.log(req.params);
 
 
-
-  console.log(req.session.username);
   const usertable = req.session.username;
+  // console.log(req.session.username);
   const studentId = req.params.Registration_Number;
-  console.log(studentId);
-  const query = `UPDATE ${usertable} SET verification = "FALSE" WHERE Registration_Number =  ?`;
-  console.log(query);
-  mysqlx.query(query, [studentId], function (err, result) {
+  const queryx = `SELECT user_tablename FROM users WHERE username = '${usertable}'  `
+  mysqlx.query(queryx, function (err, rows, fields) {
 
     if (err) {
       console.log(err);
       res.status(500).send("Internal Server Error");
       return;
     }
-    res.redirect("/students");
+    const usertablename = rows.map((row) => {
+      return Object.assign({}, row);
+    });
+    console.log('lmso');
+    console.log(usertablename[0].user_tablename);
+    req.session.usertablename = usertablename[0].user_tablename;
+
+    const query = `UPDATE ${req.session.usertablename} SET verification = "FALSE" WHERE Registration_Number = ?`;
+
+    mysqlx.query(query, [studentId], function (err, rows, fields) {
+  
+      if (err) {
+        console.log(err);
+        res.status(500).send("Internal Server Error");
+        return;
+      }
+      res.redirect("/students");
+    });
   });
+  // console.log('lmsoaa');
+
+  // console.log(req.session.usertablename);
+ 
 });
+
+
+
+
+
+
+
+
+
+
+
 
 //Anshuman Codes start
 
