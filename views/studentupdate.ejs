@@ -90,9 +90,12 @@
   </tr>
 </table>
 
+<% if (status.Accounts_Verified === 'TRUE' && status.Library_Verified === 'TRUE' && status['Training_And_Placement Verified'] === 'TRUE' && status.Alumni_Cell_Verified === 'TRUE' && status.Project_Verified === 'TRUE' && status.Internship_Verified === 'TRUE' && status.HOD_Verified === 'TRUE') { %>
 	<form method="GET" action="/formgenerate">
-		<button type="submit" >Check status</button>
+	  <button type="submit" >Check status</button>
 	</form>
-  
+<% } %>
+
+
 </body>
 </html>
