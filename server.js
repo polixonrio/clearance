@@ -17,14 +17,6 @@ const path = require("path");
 const app = express();
 const port = 8089;
 
-const adminlogin = require("./routes/adminlogin");
-// const filter = require("./routes/filter");
-// const login = require("./routes/login");
-
-app.use("/adminlogin", adminlogin);
-// app.use('/filter', filter);
-// app.use('/login', login);
-
 let mysqlx = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -57,6 +49,75 @@ app.use(
     saveUninitialized: false,
   })
 );
+
+const passportSecond = require("passport");
+app.use("/adminlogin", passportSecond.initialize());
+app.use("/adminlogin", passportSecond.session());
+app.use(flash());
+
+
+
+passportSecond.use(
+  "local-second",
+  new LocalStrategy((username, password, done) => {
+    mysqlx.query(
+      "SELECT * FROM adminusers WHERE username = ? AND password = ?",
+      [username, password],
+      (err, results) => {
+        if (err) return done(err);
+        if (results.length === 0) {
+          return done(null, false, {
+            message: "Incorrect username or password",
+          });
+        }
+        const user = results[0];
+        return done(null, user);
+      }
+    );
+  })
+);
+
+// Configure Passport serializer/deserializer functions for second view
+passportSecond.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passportSecond.deserializeUser((id, done) => {
+  mysqlx.query(
+    "SELECT * FROM adminusers WHERE id = ?",
+    [id],
+    (err, results) => {
+      if (err) return done(err);
+      const user = results[0];
+      return done(null, user);
+    }
+  );
+});
+
+app.post("/adminlogin", function (req, res, next) {
+  passport.authenticate("local-second", function (err, user, info) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      req.flash("error", info.message);
+      return res.redirect("/adminlogin");
+    }
+    req.logIn(user, function (err) {
+      if (err) {
+        return next(err);
+      }
+
+      req.session.username = req.user.username;
+
+      res.redirect("/excelupload");
+    });
+  })(req, res, next);
+});
+
+app.get("/adminlogin", function (req, res) {
+  res.render("adminlogin", { message: req.flash("error") });
+});
 
 const passportFirst = require("passport");
 app.use("/studentlogin", passportFirst.initialize());
@@ -325,8 +386,6 @@ app.post("/filter", function (req, res) {
 
   console.log(userId);
 
-
-
   // const users = req.body.username;
   const Registration_Number = req.body.Registration_Number;
   const Name = req.body.Name;
@@ -409,10 +468,6 @@ app.post("/filter", function (req, res) {
 });
 
 app.get("/students", authenticate, function (req, res) {
-
-
-
-
   const userId = req.session.username;
   console.log(userId);
 
@@ -480,7 +535,6 @@ app.get("/students", authenticate, function (req, res) {
         res.render("students", {
           students: students1,
           user: userId,
-
         });
       });
     }
@@ -499,16 +553,15 @@ app.get("/back", function (req, res) {
   res.render("filter");
 });
 
-
 app.post("/students/:Registration_Number/verify", function (req, res) {
-
-
   const usertable = req.session.username;
+  console.log("postingverify");
+
   // console.log(req.session.username);
   const studentId = req.params.Registration_Number;
-  const queryx = `SELECT user_tablename FROM users WHERE username = '${usertable}'  `
+  console.log(studentId);
+  const queryx = `SELECT user_tablename FROM users WHERE username = "${usertable}"  `;
   mysqlx.query(queryx, function (err, rows, fields) {
-
     if (err) {
       console.log(err);
       res.status(500).send("Internal Server Error");
@@ -517,14 +570,13 @@ app.post("/students/:Registration_Number/verify", function (req, res) {
     const usertablename = rows.map((row) => {
       return Object.assign({}, row);
     });
-    console.log('lmso');
+    console.log("lmso");
     console.log(usertablename[0].user_tablename);
     req.session.usertablename = usertablename[0].user_tablename;
 
-    const query = `UPDATE ${req.session.usertablename} SET verification = "TRUE" WHERE Registration_Number = ?`;
-
+    const query = `UPDATE ${req.session.usertablename} SET verification = 1 WHERE Registration_Number = "${studentId}"`;
+    console.log(query);
     mysqlx.query(query, [studentId], function (err, rows, fields) {
-  
       if (err) {
         console.log(err);
         res.status(500).send("Internal Server Error");
@@ -536,20 +588,15 @@ app.post("/students/:Registration_Number/verify", function (req, res) {
   // console.log('lmsoaa');
 
   // console.log(req.session.usertablename);
- 
 });
-
-
 
 app.post("/students/:Registration_Number/unverify", function (req, res) {
-
-
   const usertable = req.session.username;
+  console.log(usertable);
   // console.log(req.session.username);
   const studentId = req.params.Registration_Number;
-  const queryx = `SELECT user_tablename FROM users WHERE username = '${usertable}'  `
+  const queryx = `SELECT user_tablename FROM users WHERE username = "${usertable}"  `;
   mysqlx.query(queryx, function (err, rows, fields) {
-
     if (err) {
       console.log(err);
       res.status(500).send("Internal Server Error");
@@ -558,14 +605,13 @@ app.post("/students/:Registration_Number/unverify", function (req, res) {
     const usertablename = rows.map((row) => {
       return Object.assign({}, row);
     });
-    console.log('lmso');
+    console.log("unverified");
     console.log(usertablename[0].user_tablename);
     req.session.usertablename = usertablename[0].user_tablename;
 
-    const query = `UPDATE ${req.session.usertablename} SET verification = "FALSE" WHERE Registration_Number = ?`;
-
-    mysqlx.query(query, [studentId], function (err, rows, fields) {
-  
+    const query = `UPDATE ${req.session.usertablename} SET verification = 0 WHERE Registration_Number = "${studentId}"`;
+    console.log(query);
+    mysqlx.query(query, function (err, rows, fields) {
       if (err) {
         console.log(err);
         res.status(500).send("Internal Server Error");
@@ -577,29 +623,52 @@ app.post("/students/:Registration_Number/unverify", function (req, res) {
   // console.log('lmsoaa');
 
   // console.log(req.session.usertablename);
- 
 });
 
+// app.post("/students/:Registration_Number/unverify", function (req, res) {
 
+//   const usertable = req.session.username;
+//   // console.log(req.session.username);
+//   const studentId = req.params.Registration_Number;
+//   const queryx = `SELECT user_tablename FROM users WHERE username = ${usertable}  `
+//   mysqlx.query(queryx, function (err, rows, fields) {
 
+//     if (err) {
+//       console.log(err);
+//       res.status(500).send("Internal Server Error");
+//       return;
+//     }
+//     const usertablename = rows.map((row) => {
+//       return Object.assign({}, row);
+//     });
+//     console.log('lmso');
+//     console.log(usertablename[0].user_tablename);
+//     req.session.usertablename = usertablename[0].user_tablename;
 
+//     const query = `UPDATE ${req.session.usertablename} SET verification = "FALSE" WHERE Registration_Number = ?`;
 
+//     mysqlx.query(query, [studentId], function (err, rows, fields) {
 
+//       if (err) {
+//         console.log(err);
+//         res.status(500).send("Internal Server Error");
+//         return;
+//       }
+//       res.redirect("/students");
+//     });
+//   });
+//   // console.log('lmsoaa');
 
+//   // console.log(req.session.usertablename);
 
-
-
-
+// });
 
 //Anshuman Codes start
 
 // making route to page to generate and download pdf
 app.get("/formgenerate", function (req, res) {
-
   const userId = req.session.username;
   console.log(userId);
-
-  
 
   mysqlx.query(
     "SELECT * FROM students WHERE Email = ?",
@@ -622,8 +691,6 @@ app.get("/formgenerate", function (req, res) {
       });
     }
   );
-
-
 });
 
 app.get("/excelupload", (req, res) => {

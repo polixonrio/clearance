@@ -1,101 +1,179 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Logged In User Status</title>
+  <title>Students</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.tailwindcss.com" rel="stylesheet">
 </head>
-<body>
+<body class="bg-gray-100">
+<div class="container mx-auto p-8">
+  <div class="flex justify-center">
+    <div class="w-full md:w-2/3 lg:w-1/2">
+      <h1 class="text-center text-3xl font-bold mb-4">Students</h1>
+      <div class="flex justify-center space-x-2 mb-4">
+        <a class="btn btn-primary" href="/logout">Logout</a>
+        <a class="btn btn-primary" href="/filter">Back to Filter</a>
+      </div>
 
-
-
-	<h1>Welcome <%= status.Name %></h1>
-
-	<h1>Student Status</h1>
-
-<table>
-  <tr>
-    <td>ID:</td>
-    <td><%= status.ID %></td>
-  </tr>
-  <tr>
-    <td>Registration Number:</td>
-    <td><%= status.Registration_Number %></td>
-  </tr>
-  <tr>
-    <td>Name:</td>
-    <td><%= status.Name %></td>
-  </tr>
-  <tr>
-    <td>Roll Number:</td>
-    <td><%= status.Roll_Number %></td>
-  </tr>
-  <tr>
-    <td>Branch:</td>
-    <td><%= status.Branch %></td>
-  </tr>
-  <tr>
-    <td>Course:</td>
-    <td><%= status.Course %></td>
-  </tr>
-  <tr>
-    <td>Semester:</td>
-    <td><%= status.Semester %></td>
-  </tr>
-  <tr>
-    <td>Section:</td>
-    <td><%= status.Section %></td>
-  </tr>
-  <tr>
-    <td>Session:</td>
-    <td><%= status.Session %></td>
-  </tr>
-  <tr>
-    <td>Year:</td>
-    <td><%= status.Year %></td>
-  </tr>
-  <tr>
-    <td>Mobile Number:</td>
-    <td><%= status.Mobile_Number %></td>
-  </tr>
-  <tr>
-    <td>Email:</td>
-    <td><%= status.Email %></td>
-  </tr>
-  <tr>
-    <td>Accounts Verified:</td>
-    <td><%= status.Accounts_Verified %></td>
-  </tr>
-  <tr>
-    <td>Library Verified:</td>
-    <td><%= status.Library_Verified %></td>
-  </tr>
-  <tr>
-    <td>Training and Placement Verified:</td>
-    <td><%= status['Training_And_Placement Verified'] %></td>
-  </tr>
-  <tr>
-    <td>Alumni Cell Verified:</td>
-    <td><%= status.Alumni_Cell_Verified %></td>
-  </tr>
-  <tr>
-    <td>Project Verified:</td>
-    <td><%= status.Project_Verified %></td>
-  </tr>
-  <tr>
-    <td>Internship Verified:</td>
-    <td><%= status.Internship_Verified %></td>
-  </tr>
-  <tr>
-    <td>HOD Verified:</td>
-    <td><%= status.HOD_Verified %></td>
-  </tr>
-</table>
-
-<% if (status.Accounts_Verified === 'TRUE' && status.Library_Verified === 'TRUE' && status['Training_And_Placement Verified'] === 'TRUE' && status.Alumni_Cell_Verified === 'TRUE' && status.Project_Verified === 'TRUE' && status.Internship_Verified === 'TRUE' && status.HOD_Verified === 'TRUE') { %>
-	<form method="GET" action="/formgenerate">
-	  <button type="submit" >Check status</button>
-	</form>
-<% } %>
-
-
+      <table class="table-auto w-full border-collapse">
+        <thead>
+        <tr>
+          <th class="px-4 py-2">Registration Number</th>
+          <th class="px-4 py-2">Name</th>
+          <th class="px-4 py-2">Course</th>
+          <th class="px-4 py-2">Semester</th>
+          <th class="px-4 py-2">Branch</th>
+          <th class="px-4 py-2">Section</th>
+          <th class="px-4 py-2">Session</th>
+          <th class="px-4 py-2">Year</th>
+          <th class="px-4 py-2">Mobile Number</th>
+          <th class="px-4 py-2">Verification Status</th>
+          <th class="px-4 py-2">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% if (typeof students !== 'undefined' && students.length > 0) { %>
+        <% students.forEach(function(student) { %>
+        <tr class="border-b border-gray-300">
+          <td class="px-4 py-2"><%= student.Registration_Number %></td>
+          <td class="px-4 py-2"><%= student.Name %></td>
+          <td class="px-4 py-2"><%= student.Course %></td>
+          <td class="px-4 py-2"><%= student.Semester %></td>
+          <td class="px-4 py-2"><%= student.Branch %></td>
+          <td class="px-4 py-2"><%= student.Section %></td>
+          <td class="px-4 py-2"><%= student.Session %></td>
+          <td class="px-4 py-2"><%= student.Year %></td>
+          <td class="px-4 py-2"><%= student.Mobile_Number %></td>
+          <td class="px-4 py-2">
+            <% if (typeof student.Accounts_Verified !== 'undefined') { %>
+              <% if (student.Accounts_Verified === '0') { %>
+                <span class="text-red-500">UNVERIFIED</span>
+              <% } else if (student.Accounts_Verified === '1') { %>
+                <span class="text-green-500">VERIFIED</span>
+              <% } %>
+            <% } else if (typeof student.Library_Verified !== 'undefined') { %>
+              <% if (student.Library_Verified === '0') { %>
+                <span class="text-red-500">UNVERIFIED</span>
+              <% } else if (student.Library_Verified === '1') { %>
+                <span class="text-green-500">VERIFIED</span>
+              <% } %>
+            <% } else if (typeof student['Training_And_Placement Verified'] !== 'undefined') { %>
+              <% if (student['Training_And_Placement Verified'] === '0') { %>
+                <span class="text-red-500">UNVERIFIED</span>
+              <% } else if (student['Training_And_Placement Verified'] === '1') { %>
+                <span class="text-green-500">VERIFIED</span>
+              <% } %>
+            <% } else if (typeof student.Alumni_Cell_Verified !== 'undefined') { %>
+              <% if (student.Alumni_Cell_Verified === '0') { %>
+                <span class="text-red-500">UNVERIFIED</span>
+              <% } else if (student.Alumni_Cell_Verified === '1') { %>
+                <span class="text-green-500">VERIFIED</span>
+              <% } %>
+            <% } else if (typeof student.Project_Verified !== 'undefined') { %>
+              <% if (student.Project_Verified === '0') { %>
+                <span class="text-red-500">UNVERIFIED</span>
+              <% } else if (student.Project_Verified === '1') { %>
+                <span class="text-green-500">VERIFIED</span>
+              <% } %>
+            <% } else if (typeof student.Internship_Verified !== 'undefined') { %>
+              <% if (student.Internship_Verified === '0') { %>
+                <span class="text-red-500">UNVERIFIED</span>
+              <% } else if (student.Internship_Verified === '1') { %>
+                <span class="text-green-500">VERIFIED</span>
+              <% } %>
+            <% } else if (typeof student.HOD_Verified !== 'undefined') { %>
+              <% if (student.HOD_Verified === '0') { %>
+                <span class="text-red-500">UNVERIFIED</span>
+              <% } else if (student.HOD_Verified === '1') { %>
+                <span class="text-green-500">VERIFIED</span>
+              <% } %>
+            <% } %>
+          </td>
+          <td class="px-4 py-2">
+            <% if (typeof student.Accounts_Verified !== 'undefined') { %>
+              <% if (student.Accounts_Verified === '0') { %>
+                <form action="/students/<%= student.Registration_Number %>/unverify" method="POST">
+                  <button type="submit" class="btn btn-danger btn-sm">Unverify</button>
+                </form>
+              <% } else if (student.Accounts_Verified === '1') { %>
+                <form action="/students/<%= student.Registration_Number %>/verify" method="POST">
+                  <button type="submit" class="btn btn-success btn-sm">Verify</button>
+                </form>
+              <% } %>
+            <% } else if (typeof student.Library_Verified !== 'undefined') { %>
+              <% if (student.Library_Verified === '0') { %>
+                <form action="/students/<%= student.Registration_Number %>/unverify" method="POST">
+                  <button type="submit" class="btn btn-danger btn-sm">Unverify</button>
+                </form>
+              <% } else if (student.Library_Verified === '1') { %>
+                <form action="/students/<%= student.Registration_Number %>/verify" method="POST">
+                  <button type="submit" class="btn btn-success btn-sm">Verify</button>
+                </form>
+              <% } %>
+            <% } else if (typeof student['Training_And_Placement Verified'] !== 'undefined') { %>
+              <% if (student['Training_And_Placement Verified'] === '0') { %>
+                <form action="/students/<%= student.Registration_Number %>/unverify" method="POST">
+                  <button type="submit" class="btn btn-danger btn-sm">Unverify</button>
+                </form>
+              <% } else if (student['Training_And_Placement Verified'] === '1') { %>
+                <form action="/students/<%= student.Registration_Number %>/verify" method="POST">
+                  <button type="submit" class="btn btn-success btn-sm">Verify</button>
+                </form>
+              <% } %>
+            <% } else if (typeof student.Alumni_Cell_Verified !== 'undefined') { %>
+              <% if (student.Alumni_Cell_Verified === '0') { %>
+                <form action="/students/<%= student.Registration_Number %>/unverify" method="POST">
+                  <button type="submit" class="btn btn-danger btn-sm">Unverify</button>
+                </form>
+              <% } else if (student.Alumni_Cell_Verified === '1') { %>
+                <form action="/students/<%= student.Registration_Number %>/verify" method="POST">
+                  <button type="submit" class="btn btn-success btn-sm">Verify</button>
+                </form>
+              <% } %>
+            <% } else if (typeof student.Project_Verified !== 'undefined') { %>
+              <% if (student.Project_Verified === '0') { %>
+                <form action="/students/<%= student.Registration_Number %>/unverify" method="POST">
+                  <button type="submit" class="btn btn-danger btn-sm">Unverify</button>
+                </form>
+              <% } else if (student.Project_Verified === '1') { %>
+                <form action="/students/<%= student.Registration_Number %>/verify" method="POST">
+                  <button type="submit" class="btn btn-success btn-sm">Verify</button>
+                </form>
+              <% } %>
+            <% } else if (typeof student.Internship_Verified !== 'undefined') { %>
+              <% if (student.Internship_Verified === '0') { %>
+                <form action="/students/<%= student.Registration_Number %>/unverify" method="POST">
+                  <button type="submit" class="btn btn-danger btn-sm">Unverify</button>
+                </form>
+              <% } else if (student.Internship_Verified === '1') { %>
+                <form action="/students/<%= student.Registration_Number %>/verify" method="POST">
+                  <button type="submit" class="btn btn-success btn-sm">Verify</button>
+                </form>
+              <% } %>
+            <% } else if (typeof student.HOD_Verified !== 'undefined') { %>
+              <% if (student.HOD_Verified === '0') { %>
+                <form action="/students/<%= student.Registration_Number %>/unverify" method="POST">
+                  <button type="submit" class="btn btn-danger btn-sm">Unverify</button>
+                </form>
+              <% } else if (student.HOD_Verified === '1') { %>
+                <form action="/students/<%= student.Registration_Number %>/verify" method="POST">
+                  <button type="submit" class="btn btn-success btn-sm">Verify</button>
+                </form>
+              <% } %>
+            <% } %>
+          </td>
+        </tr>
+        <% }) %>
+        <% } else { %>
+        <tr>
+          <td colspan="11" class="px-4 py-2 text-center">No students found.</td>
+        </tr>
+        <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 </body>
 </html>
