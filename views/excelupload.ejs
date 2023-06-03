@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Upload Excel File</title>
     <style>
       body {
@@ -14,49 +14,70 @@
         font-size: 2.5rem;
         color: #444444;
         margin-top: 50px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
       }
       form {
         margin: 0 auto;
         width: 50%;
         padding: 20px;
         background-color: #ffffff;
-        box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
         border-radius: 10px;
       }
-      input[type=file] {
+      input[type="file"] {
         margin: 10px 0;
         font-size: 1.2rem;
         padding: 10px;
         border: none;
         border-radius: 5px;
         background-color: #f2f2f2;
-        box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
       }
-      input[type=submit] {
+      input[type="submit"] {
         display: block;
         margin: 20px auto 0;
         font-size: 1.2rem;
         padding: 10px 20px;
         border: none;
         border-radius: 5px;
-        background-color: #4CAF50;
+        background-color: #4caf50;
         color: #ffffff;
         text-align: center;
         text-decoration: none;
-        box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         transition: background-color 0.3s ease-in-out;
       }
-      input[type=submit]:hover {
+      input[type="submit"]:hover {
         background-color: #3e8e41;
       }
+
+      .error-message {
+        display: flex;
+        align-items: center;
+        background-color: #ffcccc;
+        border: 1px solid #ff0000;
+        padding: 10px;
+        border-radius: 5px;
+      }
+
+      .error-icon {
+        font-size: 20px;
+        margin-right: 10px;
+      }
+
+      .error-text {
+        color: #ff0000;
+        font-weight: bold;
+      }
+
+      /* Additional styles can be added as desired */
     </style>
   </head>
   <body>
     <h1>Upload Excel File</h1>
     <form action="/upload" method="post" enctype="multipart/form-data">
-      <input type="file" name="myfile">
-      <input type="submit" value="Upload File">
+      <input type="file" name="myfile" />
+      <input type="submit" value="Upload File" />
     </form>
   </body>
 </html>

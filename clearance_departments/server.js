@@ -1,21 +1,15 @@
-//Anshuman
-const xlsx = require("xlsx");
-const fileUpload = require("express-fileupload");
-//Anshuman
 
 const express = require("express");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
-const flash = require("express-flash");
+const flash = require('express-flash');
 const session = require("express-session");
-
 const mysql = require("mysql");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 dotenv.config({ path: "config.env" });
-const path = require("path");
 const app = express();
-const port = 8089;
+const port = 8082;
 
 let mysqlx = mysql.createConnection({
   host: "localhost",
@@ -31,16 +25,11 @@ mysqlx.connect((err) => {
     console.log("db connection failed" + JSON.stringify(err, undefined, 2));
   }
 });
-//Anshuman
 
-//Anshuman
 app.use(morgan("tiny"));
-
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
 app.set("view engine", "ejs");
-
 app.use(
   session({
     cookie: { maxAge: 60000 },
@@ -49,90 +38,20 @@ app.use(
     saveUninitialized: false,
   })
 );
-app.use(express.static('public'));
-
-const passport1 = require("passport");
-app.use("/adminlogin", passport1.initialize());
-app.use("/adminlogin", passport1.session());
 app.use(flash());
-
-passport1.use(
-  "local1",
-  new LocalStrategy((username, password, done) => {
-    mysqlx.query(
-      "SELECT * FROM adminusers WHERE username = ? AND password = ?",
-      [username, password],
-      (err, results) => {
-        if (err) return done(err);
-        if (results.length === 0) {
-          return done(null, false, {
-            message: "Incorrect username or password",
-          });
-        }
-        const user = results[0];
-        return done(null, user);
-      }
-    );
-  })
-);
-
-// Configure Passport serializer/deserializer functions for second view
-passport1.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport1.deserializeUser((id, done) => {
-  mysqlx.query(
-    "SELECT * FROM adminusers WHERE id = ?",
-    [id],
-    (err, results) => {
-      if (err) return done(err);
-      const user = results[0];
-      return done(null, user);
-    }
-  );
-});
-
-app.post("/adminlogin", function (req, res, next) {
-  passport.authenticate("local1", function (err, user, info) {
-    if (err) {
-      return next(err);
-    }
-    if (!user) {
-      req.flash("error", info.message);
-      return res.redirect("/adminlogin");
-    }
-    req.logIn(user, function (err) {
-      if (err) {
-        return next(err);
-      }
-
-      // req.session.username = req.user.username;
-      // console.log("req.ses.user ==");
-      // console.log(req.session.username);
-      res.redirect("/excelupload");
-    });
-  })(req, res, next);
-});
-
-app.get("/adminlogin", function (req, res) {
-  res.render("adminlogin", { message: req.flash("error") });
-});
-
-
-
+app.use(express.static('public'));
 
 
 const passportFirst = require("passport");
-app.use("/studentlogin", passportFirst.initialize());
-app.use("/studentlogin", passportFirst.session());
+app.use("/login", passportFirst.initialize());
+app.use("/login", passportFirst.session());
 app.use(flash());
 
 passportFirst.use(
   "local-first",
   new LocalStrategy((username, password, done) => {
     mysqlx.query(
-      "SELECT * FROM studentusers WHERE username = ? AND password = ?",
+      "SELECT * FROM users WHERE username = ? AND password = ?",
       [username, password],
       (err, results) => {
         if (err) return done(err);
@@ -148,136 +67,26 @@ passportFirst.use(
   })
 );
 
-// Configure Passport serializer/deserializer functions for second view
 passportFirst.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user.username);
 });
 
-passportFirst.deserializeUser((id, done) => {
+passportFirst.deserializeUser((username, done) => {
   mysqlx.query(
-    "SELECT * FROM studentusers WHERE id = ?",
-    [id],
+    "SELECT * FROM users WHERE username = ?",
+    [username],
     (err, results) => {
       if (err) return done(err);
       const user = results[0];
+
       return done(null, user);
     }
   );
 });
 
-app.post("/studentlogin", function (req, res, next) {
-  passport.authenticate("local-first", function (err, user, info) {
-    if (err) {
-      return next(err);
-    }
-    if (!user) {
-      req.flash("error", info.message);
-      return res.redirect("/studentlogin");
-    }
-    req.logIn(user, function (err) {
-      if (err) {
-        return next(err);
-      }
-
-      req.session.username = req.user.username;
-      // console.log("req.ses.user ==");
-      // console.log(req.session.username);
-      res.redirect("/2studentupdate");
-    });
-  })(req, res, next);
-});
-
-app.get("/studentlogin", function (req, res) {
-  res.render("studentlogin", { message: req.flash("error") });
-});
-
-// Passport configuration
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash());
-
-passport.use(
-  "login",
-  new LocalStrategy(function (username, password, done) {
-    mysqlx.query(
-      "SELECT * FROM users WHERE username = ?",
-      [username],
-      function (err, rows, fields) {
-        if (err) {
-          return done(err);
-        }
-        if (!rows.length) {
-          return done(null, false, { message: "Incorrect username." });
-        }
-        if (rows[0].password != password) {
-          return done(null, false, { message: "Incorrect password." });
-        }
-        return done(null, rows[0]);
-      }
-    );
-  })
-);
-
-app.get("/2studentupdate", function (req, res) {
-  console.log("req.ses.user ==");
-  console.log(req.session.username);
-  
-  mysqlx.query(
-    "SELECT * FROM students WHERE Email = ?",
-    [req.session.username],
-    function (err, crows, fields) {
-      if (err) {
-        console.log(err);
-        res.status(500).send("Internal Server Error");
-        return;
-      }
-      const scrows = crows.map((row) => {
-        return Object.assign({}, row);
-      });
-      // const scrows = crows.map((row) => row.Branch);
-      const mol = scrows[0];
-      console.log(mol);
-
-      res.render("2studentupdate", {
-        status: scrows[0],
-      });
-    }
-  );
-});
-
-
-
-passport.serializeUser(function (user, done) {
-  done(null, user.ID);
-});
-
-passport.deserializeUser(function (id, done) {
-  mysqlx.query(
-    "SELECT * FROM users WHERE id = ?",
-    [id],
-    function (err, rows, fields) {
-      done(err, rows[0]);
-    }
-  );
-});
-
-// Middleware to make the current user available in templates
-app.use(function (req, res, next) {
-  res.locals.currentUser = req.user;
-  next();
-});
-
-// Routes
-app.get("/", function (req, res) {
-  res.render("index", { user: req.user });
-});
-
-app.get("/login", function (req, res) {
-  res.render("login", { message: req.flash("error") });
-});
 
 app.post("/login", function (req, res, next) {
-  passport.authenticate("login", function (err, user, info) {
+  passport.authenticate("local-first", function (err, user, info) {
     if (err) {
       return next(err);
     }
@@ -291,13 +100,23 @@ app.post("/login", function (req, res, next) {
       }
 
       req.session.username = req.user.username;
-
+      console.log(req.session.username);
       res.redirect("/filter");
     });
   })(req, res, next);
 });
 
-app.get("/filter", function (req, res) {
+app.get("/", function (req, res) {
+  res.render("index", { user: req.user });
+});
+
+
+app.get("/login", function (req, res) {
+  res.render("login", { message: req.flash("error") });
+});
+
+
+app.get("/filter", ensureAuthenticated, function (req, res) {
   const userId = req.user;
   // console.log(userId);
   // Retrieve batches from the batches table
@@ -360,13 +179,14 @@ app.get("/filter", function (req, res) {
 
                       const Sections = secRows.map((row) => row.Section);
                       console.log(Semesters);
+                      console.log(userId);
                       res.render("filter", {
                         Branches: Branches,
                         Semesters: Semesters,
                         Sessions: Sessions,
                         Sections: Sections,
                         Courses: Courses,
-                        user: userId,
+                        user: req.session.username,
                       });
                     }
                   );
@@ -630,116 +450,15 @@ app.post("/students/:Registration_Number/unverify", function (req, res) {
 });
 
 
-
-
-// making route to page to generate and download pdf
-app.get("/formgenerate", function (req, res) {
-  const userId = req.session.username;
-  console.log(userId);
-
-  mysqlx.query(
-    "SELECT * FROM students WHERE Email = ?",
-    [req.session.username],
-    function (err, crows, fields) {
-      if (err) {
-        console.log(err);
-        res.status(500).send("Internal Server Error");
-        return;
-      }
-      const scrows = crows.map((row) => {
-        return Object.assign({}, row);
-      });
-      // const scrows = crows.map((row) => row.Branch);
-      const mol = scrows[0];
-      console.log(mol);
-
-      res.render("formgenerate", {
-        status: scrows[0],
-      });
-    }
-  );
-});
-
-app.get("/excelupload", (req, res) => {
-  res.render("excelupload");
-});
-
-app.use(fileUpload());
-
-app.post("/upload", (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).send("No files were uploaded.");
-  }
-
-  let uploadedFile = req.files.myfile;
-  let uploadPath = path.join(__dirname, "uploads", "testexcel.xlsx");
-
-  uploadedFile.mv(uploadPath, (err) => {
-    if (err) {
-      // Error occurred while saving the file
-      console.error(err);
-      return res.status(500).send("Error occurred while uploading the file.");
-    }
-
-    let workbook = xlsx.readFile(uploadPath);
-    let worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    let data = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
-
-    let values = [];
-    for (let i = 1; i < data.length; i++) {
-      let row = data[i];
-      values.push([
-        row[0],
-        row[1],
-        row[2],
-        row[3],
-        row[4],
-        row[5],
-        row[6],
-        row[7],
-        row[8],
-        row[9],
-        row[10],
-      ]);
-    }
-
-    console.log(values);
-
-    let sql =
-      "INSERT INTO upload (Registration_Number, Name, Roll_Number, Branch, Course, Semester, Section, Session, Year, Mobile_Number, Email) VALUES ?";
-    mysqlx.query(sql, [values], (err, result) => {
-      if (err) {
-        // Error occurred while inserting data
-        
-        const errorMessage = err.sqlMessage;
-        const errorHTML = `<div class="error-message">
-        <span class="error-icon">&#9888;</span>
-        <span class="error-text">${errorMessage}</span>
-    </div>`;
-return res.status(500).send(`Error occurred while inserting data to the database: ${errorHTML}`);
-  
-      }
-
-      res.send("File uploaded and data inserted to the database.");
-    });
-  });
-});
-
-app.post("/adminexcelredirect", function (req, res, next) {
-  // Need to make authentication currently redirecting after adminlogin to excelupload
-  const username = req.body.username;
-  const password = req.body.password;
-  if (username === "admin" && password === "admin") {
-    res.redirect("/excelupload");
+function ensureAuthenticated(req, res, next) {
+  if (req.session.username) {
+    console.log(req.session.username);
+    return next();
   } else {
-    res.redirect("/adminlogin");
+    res.redirect("/login");
   }
-});
-//Anshuman Codes end
+}
 
 app.listen(port, () => {
   console.log(`server is running`);
 });
-
-
-

@@ -62,37 +62,79 @@
   </tr>
   <tr>
     <td>Accounts Verified:</td>
-    <td><%= status.Accounts_Verified %></td>
+    <td>
+      <% if (status.Accounts_Verified === 1) { %>
+        Verified
+      <% } else { %>
+        Unverified
+      <% } %>
+    </td>
   </tr>
   <tr>
     <td>Library Verified:</td>
-    <td><%= status.Library_Verified %></td>
+    <td>
+      <% if (status.Library_Verified === 1) { %>
+        Verified
+      <% } else { %>
+        Unverified
+      <% } %>
+    </td>
   </tr>
   <tr>
     <td>Training and Placement Verified:</td>
-    <td><%= status['Training_And_Placement Verified'] %></td>
+    <td>
+      <% if (status['Training_And_Placement Verified'] === 1) { %>
+        Verified
+      <% } else { %>
+        Unverified
+      <% } %>
+    </td>
   </tr>
   <tr>
     <td>Alumni Cell Verified:</td>
-    <td><%= status.Alumni_Cell_Verified %></td>
+    <td>
+      <% if (status.Alumni_Cell_Verified === 1) { %>
+        Verified
+      <% } else { %>
+        Unverified
+      <% } %>
+    </td>
   </tr>
   <tr>
     <td>Project Verified:</td>
-    <td><%= status.Project_Verified %></td>
+    <td>
+      <% if (status.Project_Verified === 1) { %>
+        Verified
+      <% } else { %>
+        Unverified
+      <% } %>
+    </td>
   </tr>
   <tr>
     <td>Internship Verified:</td>
-    <td><%= status.Internship_Verified %></td>
+    <td>
+      <% if (status.Internship_Verified === 1) { %>
+        Verified
+      <% } else { %>
+        Unverified
+      <% } %>
+    </td>
   </tr>
   <tr>
     <td>HOD Verified:</td>
-    <td><%= status.HOD_Verified %></td>
+    <td>
+      <% if (status.HOD_Verified === 1) { %>
+        Verified
+      <% } else { %>
+        Unverified
+      <% } %>
+    </td>
   </tr>
 </table>
 
-<% if (status.Accounts_Verified === 'TRUE' && status.Library_Verified === 'TRUE' && status['Training_And_Placement Verified'] === 'TRUE' && status.Alumni_Cell_Verified === 'TRUE' && status.Project_Verified === 'TRUE' && status.Internship_Verified === 'TRUE' && status.HOD_Verified === 'TRUE') { %>
+<% if (status.Accounts_Verified === 1 && status.Library_Verified === 1 && status['Training_And_Placement Verified'] === 1 && status.Alumni_Cell_Verified === 1 && status.Project_Verified === 1 && status.Internship_Verified === 1 && status.HOD_Verified === 1) { %>
 	<form method="GET" action="/formgenerate">
-	  <button type="submit" >Check status</button>
+	  <button type="submit" >Download Form</button>
 	</form>
 <% } %>
 

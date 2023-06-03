@@ -97,7 +97,7 @@
 		<button id="button">Download PDF</button>
 		<div class="card" id="makepdf">
 			<div class = "heading">
-                <img src="/images/logo.png" alt="LOGO">
+                <img src="../images/logo.png" alt="LOGO">
                 <h2 id = "GHRCE">G.H. RAISONI COLLEGE OF ENGINEERING</h2>
                 <h5 id ="auton">(An Autonomous Institute affiliated to RashtrasantTukdojiMaharaj Nagpur University , Nagpur)</h5>
                 <h5 id ="dual">Dual Accreditations NAAC "A+" Grade& NBA (Tier-1)</h5>
@@ -137,37 +137,79 @@
                   <tr>
                     <td class="tg-0pky">1</td>
                     <td class="tg-0lax">Department HOD</td>
-                    <td class="tg-0lax"><%= status.HOD_Verified %></td>
-                  </tr>
-                  <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0lax">Project Report Submitted</td>
-                    <td class="tg-0lax"><%= status.Project_Verified %></td>
-                  </tr>
-                  <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0lax">Internship Report Submitted</td>
-                    <td class="tg-0lax"><%= status.Internship_Verified %></td>
+                    <td>
+                      <% if (status.HOD_Verified === 1) { %>
+                        <img height="40" width="40" src="../images/ver.webp" alt="Verified">
+                      <% } else { %>
+                        Unverified
+                      <% } %>
+                    </td>
                   </tr>
                   <tr>
                     <td class="tg-0pky">2</td>
-                    <td class="tg-0lax">Accounts Department</td>
-                    <td class="tg-0lax"><%= status.Accounts_Verified %></td>
+                    <td class="tg-0lax">Project Report Submitted</td>
+                    <td>
+                      <% if (status.Project_Verified === 1) { %>
+                        <img height="40" width="40" src="../images/ver.webp" alt="Verified">
+                      <% } else { %>
+                        Unverified
+                      <% } %>
+                    </td>
                   </tr>
                   <tr>
                     <td class="tg-0pky">3</td>
-                    <td class="tg-0lax">Library Department</td>
-                    <td class="tg-0lax"><%= status.Library_Verified %></td>
+                    <td class="tg-0lax">Internship Report Submitted</td>
+                    <td>
+                      <% if (status.Internship_Verified === 1) { %>
+                        <img height="40" width="40" src="../images/ver.webp" alt="Verified">
+                      <% } else { %>
+                        Unverified
+                      <% } %>
+                    </td>
                   </tr>
                   <tr>
                     <td class="tg-0pky">4</td>
-                    <td class="tg-0lax">Training and Placement Department</td>
-                    <td class="tg-0lax"><%= status['Training_And_Placement Verified'] %></td>
+                    <td>Accounts Verified:</td>
+                    <td>
+                      <% if (status.Accounts_Verified === 1) { %>
+                        <img height="40" width="40" src="../images/ver.webp" alt="Verified">
+                      <% } else { %>
+                        Unverified
+                      <% } %>
+                    </td>
                   </tr>
                   <tr>
                     <td class="tg-0pky">5</td>
+                    <td class="tg-0lax">Library Department</td>
+                    <td>
+                      <% if (status.Library_Verified === 1) { %>
+                        <img height="40" width="40" src="../images/ver.webp" alt="Verified">
+                      <% } else { %>
+                        Unverified
+                      <% } %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky">6</td>
+                    <td class="tg-0lax">Training and Placement Department</td>
+                    <td>
+                      <% if (status['Training_And_Placement Verified'] === 1) { %>
+                        <img height="40" width="40" src="../images/ver.webp" alt="Verified">
+                      <% } else { %>
+                        Unverified
+                      <% } %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky">7</td>
                     <td class="tg-0lax">Alumni Cell</td>
-                    <td class="tg-0lax"><%= status.Alumni_Cell_Verified %></td>
+                    <td>
+                      <% if (status.Alumni_Cell_Verified === 1) { %>
+                        <img height="40" width="40" src="../images/ver.webp" alt="Verified">
+                      <% } else { %>
+                        Unverified
+                      <% } %>
+                    </td>
                   </tr>
                 </tbody>
                 </table>

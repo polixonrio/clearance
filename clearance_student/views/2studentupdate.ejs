@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Logged In User Status</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main class="bg-white">
+      <section class="bg-gray-100">
+        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+          <h1 class="text-3xl font-bold leading-tight font-serif tracking-tight text-gray-900 mt-4">
+            Student Status
+          </h1>
+          <div class="flex">
+            <div>
+            <table class="w-11/12 mt-6 bg-white border border-gray-200 rounded-lg">
+
+               <h1 class="text-3xl text-center font-bold leading-tight font-serif tracking-tight text-gray-900 mt-4">Student Details</h1>
+              <tr>
+                <td class="px-4 py-2">Registration Number:</td>
+                <td class="px-4 py-2"><%= status.Registration_Number %></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Name:</td>
+                <td class="px-4 py-2"><%= status.Name %></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Roll Number:</td>
+                <td class="px-4 py-2"><%= status.Roll_Number %></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Branch:</td>
+                <td class="px-4 py-2"><%= status.Branch %></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Course:</td>
+                <td class="px-4 py-2"><%= status.Course %></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Semester:</td>
+                <td class="px-4 py-2"><%= status.Semester %></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Section:</td>
+                <td class="px-4 py-2"><%= status.Section %></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Session:</td>
+                <td class="px-4 py-2"><%= status.Session %></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Year:</td>
+                <td class="px-4 py-2"><%= status.Year %></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Mobile Number:</td>
+                <td class="px-4 py-2"><%= status.Mobile_Number %></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Email:</td>
+                <td class="px-4 py-2"><%= status.Email %></td>
+              </tr>
+              </table></div>
+              <div>                    <h1 class="text-3xl text-center font-bold leading-tight font-serif tracking-tight text-gray-900 mt-4">Verification Status</h1>
+
+                <table class="w-11/12 mt-6 bg-white border border-gray-200 rounded-lg">
+                    <tr>
+                      <td class="px-4 py-2">Accounts Verified:</td>
+                      <td class="px-4 py-2">
+                        <% if (status.Accounts_Verified === 1) { %> Verified <% } else { %> Unverified <% } %>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2">Library Verified:</td>
+                      <td class="px-4 py-2">
+                        <% if (status.Library_Verified === 1) { %> Verified <% } else { %> Unverified <% } %>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2">Training and Placement Verified:</td>
+                      <td class="px-4 py-2">
+                        <% if (status['Training_And_Placement Verified'] === 1) { %> Verified <% } else { %> Unverified <% } %>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2">Alumni Cell Verified:</td>
+                      <td class="px-4 py-2">
+                        <% if (status.Alumni_Cell_Verified === 1) { %> Verified <% } else { %> Unverified <% } %>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2">Project Verified:</td>
+                      <td class="px-4 py-2">
+                        <% if (status.Project_Verified === 1) { %> Verified <% } else { %> Unverified <% } %>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2">Internship Verified:</td>
+                      <td class="px-4 py-2">
+                        <% if (status.Internship_Verified === 1) { %> Verified <% } else { %> Unverified <% } %>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2">HOD Verified:</td>
+                      <td class="px-4 py-2">
+                        <% if (status.HOD_Verified === 1) { %> Verified <% } else { %> Unverified <% } %>
+                      </td>
+                    </tr>
+                  </table>
+        
+              </div>
+          </div>
+
+          
+         
+          <% if (
+            status.Accounts_Verified === 1 &&
+            status.Library_Verified === 1 &&
+            status['Training_And_Placement Verified'] === 1 &&
+            status.Alumni_Cell_Verified === 1 &&
+            status.Project_Verified === 1 &&
+            status.Internship_Verified === 1 &&
+            status.HOD_Verified === 1
+          ) { %>
+          <form class="mb-6" method="GET" action="/formgenerate">
+            <button class="btn bg-primary  text-white bg-gray-900 mt-6 py-2 px-4 rounded-lg shadow" type="submit">Download Form</button>
+          </form>
+          <% } %>
+
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

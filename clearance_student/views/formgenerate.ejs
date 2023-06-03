@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Tailwind CSS CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.7/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- html2pdf CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+  </head>
+
+  <body class="bg-gray-200">
+    <div class="container text-center mx-auto px-4 py-8">
+      <button
+        id="button"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 text-center justify-center rounded-full mb-4"
+      >
+        Download PDF
+      </button>
+      <div id="makepdf" class="card w-11/12 mx-auto bg-white rounded-lg p-6">
+        <div class="heading items-center mb-6">
+          <div class="mx-auto flex justify-center items-center">
+            <img src="../images/logo.png" alt="LOGO" />
+            <p id="GHRCE" class="text-2xl font-bold">
+              G.H. RAISONI COLLEGE OF ENGINEERING
+            </p>
+          </div>
+          <br>
+          <div class="text-center">
+            <h5 id="auton">
+              (An Autonomous Institute affiliated to Rashtrasant Tukdoji Maharaj
+              Nagpur University, Nagpur)
+            </h5>
+            <h5 id="dual">
+              Dual Accreditations NAAC "A+" Grade & NBA (Tier-1)
+            </h5>
+            <h5 id="crpf">
+              CRPF Fate No. 3, Hingna Road, Digdoh Hills, Nagpur - 440016
+              (INDIA)
+            </h5>
+            <div class="flex justify-center">
+              <span class="mr-2">Phone: +91 9604787184, 9689903286</span>
+              <span class="mr-2">Email: principal.ghrce@raisoni.net</span>
+              <span>Web: ghrce.raisoni.net</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="student justify-between items-center mb-6">
+          <h3 id="clearance" class="text-2xl text-center font-bold">
+            STUDENT CLEARANCE CERTIFICATE
+          </h3>
+         
+        </div>
+
+        <div class="details text-center mb-6">
+          <h4 id="udet" class="text-xl font-light font-serif mb-4">
+            Mr/Ms <%= status.Name %> was a student of IV <%= status.Name %>
+            Section <%= status.Section %> Roll No <%= status.Roll_Number %>
+            Registration Number <%= status.Registration_Number %> Mobile Number
+            <%= status.Mobile_Number %> and Appeared for <%= status.Year %>
+            examination. No Dues against him / her are as per following
+          </h4>
+        </div>
+
+        <table class="table-auto mx-auto mb-8">
+          <thead>
+            <tr>
+              <th class="px-4 py-2">Sr.No</th>
+              <th class="px-4 py-2">Department</th>
+              <th class="px-4 py-2">Signature</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border px-4 py-2">1</td>
+              <td class="border px-4 py-2">Department HOD</td>
+              <td class="border px-4 py-2">
+                <% if (status.HOD_Verified === 1) { %>
+                <img
+                  height="40"
+                  width="40"
+                  src="../images/ver.webp"
+                  alt="Verified"
+                />
+                <% } else { %> Unverified <% } %>
+              </td>
+            </tr>
+            <tr>
+              <td class="border px-4 py-2">2</td>
+              <td class="border px-4 py-2">Project Report Submitted</td>
+              <td class="border px-4 py-2">
+                <% if (status.Project_Verified === 1) { %>
+                <img
+                  height="40"
+                  width="40"
+                  src="../images/ver.webp"
+                  alt="Verified"
+                />
+                <% } else { %> Unverified <% } %>
+              </td>
+            </tr>
+            <tr>
+              <td class="border px-4 py-2">3</td>
+              <td class="border px-4 py-2">Internship Report Submitted</td>
+              <td class="border px-4 py-2">
+                <% if (status.Internship_Verified === 1) { %>
+                <img
+                  height="40"
+                  width="40"
+                  src="../images/ver.webp"
+                  alt="Verified"
+                />
+                <% } else { %> Unverified <% } %>
+              </td>
+            </tr>
+            <tr>
+              <td class="border px-4 py-2">4</td>
+              <td class="border px-4 py-2">Accounts Verified:</td>
+              <td class="border px-4 py-2">
+                <% if (status.Accounts_Verified === 1) { %>
+                <img
+                  height="40"
+                  width="40"
+                  src="../images/ver.webp"
+                  alt="Verified"
+                />
+                <% } else { %> Unverified <% } %>
+              </td>
+            </tr>
+            <tr>
+              <td class="border px-4 py-2">5</td>
+              <td class="border px-4 py-2">Library Department</td>
+              <td class="border px-4 py-2">
+                <% if (status.Library_Verified === 1) { %>
+                <img
+                  height="40"
+                  width="40"
+                  src="../images/ver.webp"
+                  alt="Verified"
+                />
+                <% } else { %> Unverified <% } %>
+              </td>
+            </tr>
+            <tr>
+              <td class="border px-4 py-2">6</td>
+              <td class="border px-4 py-2">
+                Training and Placement Department
+              </td>
+              <td class="border px-4 py-2">
+                <% if (status['Training_And_Placement Verified'] === 1) { %>
+                <img
+                  height="40"
+                  width="40"
+                  src="../images/ver.webp"
+                  alt="Verified"
+                />
+                <% } else { %> Unverified <% } %>
+              </td>
+            </tr>
+            <tr>
+              <td class="border px-4 py-2">7</td>
+              <td class="border px-4 py-2">Alumni Cell</td>
+              <td class="border px-4 py-2">
+                <% if (status.Alumni_Cell_Verified === 1) { %>
+                <img
+                  height="40"
+                  width="40"
+                  src="../images/ver.webp"
+                  alt="Verified"
+                />
+                <% } else { %> Unverified <% } %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <br />
+        <br />
+        <br />
+        <br />
+        <span id="sign" class="ml-4">Student Signature</span>
+        <br>
+        <span id="date" class="ml-4"
+        >Date: <%= new Date().toLocaleDateString('en-GB') %></span
+      >
+      </div>
+    </div>
+  </body>
+
+  <script>
+    var button = document.getElementById("button");
+    var makepdf = document.getElementById("makepdf");
+
+    button.addEventListener("click", function () {
+      html2pdf().from(makepdf).save();
+    });
+  </script>
+</html>
