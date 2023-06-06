@@ -8,7 +8,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 dotenv.config({ path: "config.env" });
 const app = express();
-const port = 8081;
+const port = 8089;
 
 let mysqlx = mysql.createConnection({
   host: "localhost",

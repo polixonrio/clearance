@@ -42,7 +42,12 @@ app.use(
 );
 app.use(flash());
 app.use(express.static('public'));
-
+app.use((req, res, next) => {
+  res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
+  res.header("Expires", "-1");
+  res.header("Pragma", "no-cache");
+  next();
+});
 
 const passportFirst = require("passport");
 app.use("/adminlogin", passportFirst.initialize());
@@ -113,9 +118,12 @@ app.get("/", function (req, res) {
 
 
 app.get("/adminlogin", function (req, res) {
-  res.render("adminlogin", { message: req.flash("error") });
+  if (req.session.username) {
+    res.redirect("/excelupload");
+  } else {
+    res.render("adminlogin", { message: req.flash("error") });
+  }
 });
-
 app.get("/excelupload", ensureAuthenticated, (req, res) => {
   res.render("excelupload");
 });
@@ -192,6 +200,19 @@ function ensureAuthenticated(req, res, next) {
     res.redirect("/adminlogin");
   }
 }
+
+
+app.get("/logout", function (req, res) {
+  req.session.destroy(function (err) {
+    // Destroy the session
+    if (err) {
+      console.log(err);
+    }
+    res.redirect("/adminlogin"); // Redirect to the login page
+  });
+});
+
+
 
 app.listen(port, () => {
   console.log(`server is running`);

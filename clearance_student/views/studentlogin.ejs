@@ -1,58 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Login</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Student Login</title>
 
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css"
-      rel="stylesheet"
-    />
+
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="stylesheets/output.css" />
+    <!-- <link rel="stylesheet" href="stylesheets/style.css"> -->
+    <link rel="icon" type="image/x-icon" href="/images/argi.webp">
 
   </head>
   <body>
-    <main class=" bg-white-100 text-white-100">
-        <section class="bg-white-50 ">
-            <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-                <img class="w-20 h-20 mr-2" src="images/logo.png" alt="logo">
-
-                <a href="#" class="flex pt-3  items-center mb-6 text-2xl font-mono font-semibold text-gray-900 ">
-                    GHRCE Clearance System
-                </a>
-                <a href="#" class="flex items-center font-mono mb-6 text-xl font-semibold text-gray-900 ">
-                    Student Login
-                </a>
-                <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-                    <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-
-                        <h1 class="text-xl font-bold leading-tight font-mono tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                            Sign in to your account
-                        </h1>
-                       
-
-                        <% if (message && message.length > 0) { %>
-                            <h3 class="text-base bg-white-100 font-bold leading-tight tracking-tight text-red-600 md:text-xl dark:text-red"><%= message[0] %>   </h3>
-                        <% } %>
-                 
-
-                        <form class="space-y-4 md:space-y-6" method="POST" action="/studentlogin">
-                            <div>
-                                <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your username</label>
-                                <input type="text" name="username" id="username" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  required="">
-                            </div>
-                            <div>
-                                <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                                <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
-                            </div>
-
-                            <button type="submit" class="w-full border-2 active:bg-red-700 focus\:bg-white-900 border-blue-700 text-white focus\:ring-purple-500 bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign in</button>
-                       
-                        </form>
-                    </div>
-                </div>
+    <div
+      class="flex h-screen w-full items-center justify-center bg-gray-900 bg-cover bg-[url('/images/bgs.webp')]"
+    >
+      <div
+        class="flex h-screen w-full items-center justify-center bg-gray-900 bg-opacity-50"
+      >
+        <div
+          class="rounded-xl bg-gray-800 bg-opacity-50 px-20 py-10 shadow-lg backdrop-blur-md max-sm:px-8"
+        >
+          <div class="flex flex-col w-60 text-white sm:w-96 ">
+            <div class="mb-8 flex flex-col items-center">
+              <img src="/images/rgi.webp" width="150" alt="" srcset="" />
+              <hr class="my-2 h-2 border-t-white bg-white-100" />
+                <h1 class="mb-2 mt-4 text-2xl">Clearance Portal</h1>
+                <h2 class="mb-2 mt-2 font-poppins text-xl">Student Login</h2>
             </div>
-          </section>
-    </main>
+            <% if (message && message.length > 0) { %>
+                <h3 class="text-base bg-white-100 font-bold leading-tight tracking-tight text-red-600 md:text-xl dark:text-red"><%= message[0] %>   </h3>
+            <% } %>
+            <form method="POST"  action="/studentlogin">
+                <label class="font-medium block mb-1 mt-2 text-white-700" for="username">
+                    Username or Email
+                  </label>
+                  <input type="text" name="username" id="username"  class="appearance-none border-2 rounded w-full py-3 px-3 leading-tight border-gray-300 bg-gray-100 focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16 font-mono" id="username" type="text" autocomplete="off" autofocus />
+                
+                  <label class="font-medium block mb-1 mt-2 text-white-700" for="password">
+                    Password
+                  </label>
+                  <div class="relative w-full">
+                    <div class="absolute inset-y-0 right-0 flex items-center px-2">
+                      <input class="hidden js-password-toggle"  id="toggle" type="checkbox" />
+                      <label class="bg-gray-300 hover:bg-gray-400 rounded px-2 py-1 text-sm text-gray-600 font-mono cursor-pointer js-password-label" for="toggle">show</label>
+                    </div>
+                    <input type="password" name="password" id="password"  class="appearance-none border-2 rounded w-full py-3 px-3 leading-tight border-gray-300 bg-gray-100 focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16 font-mono js-password" id="password" type="password" autocomplete="off"
+                    />
+                  </div>
+                  <div class="mt-8 flex justify-center text-lg text-black">
+                    <button type="submit" 
+                    class="rounded-sm   px-10 py-2 text-black bg-white shadow-xl backdrop-blur-md transition-colors duration-300 hover:text-white hover:bg-black"
+                    >Login</button>
+                  </div>
+            </form>
+            
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+    <script>
+        const passwordToggle = document.querySelector('.js-password-toggle')
+
+passwordToggle.addEventListener('change', function() {
+  const password = document.querySelector('.js-password'),
+    passwordLabel = document.querySelector('.js-password-label')
+
+  if (password.type === 'password') {
+    password.type = 'text'
+    passwordLabel.innerHTML = 'hide'
+  } else {
+    password.type = 'password'
+    passwordLabel.innerHTML = 'show'
+  }
+
+  password.focus()
+})
+
+    </script>
   </body>
 </html>
