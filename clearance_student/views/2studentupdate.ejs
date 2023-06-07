@@ -8,7 +8,24 @@
     />
   </head>
   <body>
-    <main class="bg-white">
+    <nav class="bg-gray-800 shadow-xl  fixed w-full z-20 top-0 left-0 border-b ">
+      <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <a href="/" class="flex items-center">
+          <img src="images/argi.webp" class="md:h-12 h-8 mr-3" alt="Flowbite Logo">
+          <span class="self-center text-white text-base md:text-2xl font-semibold whitespace-nowrap">Raisoni Clearance System</span>
+      </a>
+      <div class="flex md:order-2">
+         <a href="/logout"> <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Logout</button></a>
+    
+      </div>
+      <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+        <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+         
+        </ul>
+      </div>
+      </div>
+    </nav>
+    <main class="bg-white mt-12>
       <section class="bg-gray-100">
         <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <h1 class="text-3xl font-bold leading-tight font-serif tracking-tight text-gray-900 mt-4">
@@ -70,43 +87,43 @@
                     <tr>
                       <td class="px-4 py-2">Accounts Verified:</td>
                       <td class="px-4 py-2">
-                        <% if (status.Accounts_Verified === 1) { %> Verified <% } else { %> Unverified <% } %>
+                        <% if (status.Accounts_Verified === 1) { %> <span class="text-green-500">Verified</span> <% } else { %> <span class="text-red-500">Unverified</span> <% } %>
                       </td>
                     </tr>
                     <tr>
                       <td class="px-4 py-2">Library Verified:</td>
                       <td class="px-4 py-2">
-                        <% if (status.Library_Verified === 1) { %> Verified <% } else { %> Unverified <% } %>
+                        <% if (status.Library_Verified === 1) { %> <span class="text-green-500">Verified</span> <% } else { %> <span class="text-red-500">Unverified</span> <% } %>
                       </td>
                     </tr>
                     <tr>
                       <td class="px-4 py-2">Training and Placement Verified:</td>
                       <td class="px-4 py-2">
-                        <% if (status['Training_And_Placement Verified'] === 1) { %> Verified <% } else { %> Unverified <% } %>
+                        <% if (status['Training_And_Placement Verified'] === 1) { %> <span class="text-green-500">Verified</span> <% } else { %> <span class="text-red-500">Unverified</span> <% } %>
                       </td>
                     </tr>
                     <tr>
                       <td class="px-4 py-2">Alumni Cell Verified:</td>
                       <td class="px-4 py-2">
-                        <% if (status.Alumni_Cell_Verified === 1) { %> Verified <% } else { %> Unverified <% } %>
+                        <% if (status.Alumni_Cell_Verified === 1) { %> <span class="text-green-500">Verified</span> <% } else { %> <span class="text-red-500">Unverified</span> <% } %>
                       </td>
                     </tr>
                     <tr>
                       <td class="px-4 py-2">Project Verified:</td>
                       <td class="px-4 py-2">
-                        <% if (status.Project_Verified === 1) { %> Verified <% } else { %> Unverified <% } %>
+                        <% if (status.Project_Verified === 1) { %> <span class="text-green-500">Verified</span> <% } else { %> <span class="text-red-500">Unverified</span> <% } %>
                       </td>
                     </tr>
                     <tr>
                       <td class="px-4 py-2">Internship Verified:</td>
                       <td class="px-4 py-2">
-                        <% if (status.Internship_Verified === 1) { %> Verified <% } else { %> Unverified <% } %>
+                        <% if (status.Internship_Verified === 1) { %> <span class="text-green-500">Verified</span> <% } else { %> <span class="text-red-500">Unverified</span> <% } %>
                       </td>
                     </tr>
                     <tr>
                       <td class="px-4 py-2">HOD Verified:</td>
                       <td class="px-4 py-2">
-                        <% if (status.HOD_Verified === 1) { %> Verified <% } else { %> Unverified <% } %>
+                        <% if (status.HOD_Verified === 1) { %> <span class="text-green-500">Verified</span> <% } else { %> <span class="text-red-500">Unverified</span> <% } %>
                       </td>
                     </tr>
                   </table>

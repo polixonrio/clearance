@@ -11,10 +11,11 @@ const app = express();
 const port = 8089;
 
 let mysqlx = mysql.createConnection({
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
-  password: "",
-  database: "clearance",
+  port: 3306,
+  password: "my-secret-password",
+  database: "clrs",
 });
 
 mysqlx.connect((err) => {
@@ -31,7 +32,7 @@ app.use(express.json());
 app.set("view engine", "ejs");
 app.use(
   session({
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 86400000  },
     secret: "woot",
     resave: false,
     saveUninitialized: false,
@@ -39,6 +40,7 @@ app.use(
 );
 
 app.use(express.static('public'));
+
 
 
 const passportFirst = require("passport");
@@ -169,10 +171,23 @@ app.get("/studentlogin", function (req, res) {
 
 
 
+// app.get("/", function (req, res) {
+//   res.render("index", { user: req.user });
+// });
+
 app.get("/", function (req, res) {
-  res.render("index", { user: req.user });
+  res.redirect("/studentlogin");
 });
 
+app.get("/logout", function (req, res) {
+  req.session.destroy(function (err) {
+    // Destroy the session
+    if (err) {
+      console.log(err);
+    }
+    res.redirect("/studentlogin"); // Redirect to the login page
+  });
+});
 
 
 

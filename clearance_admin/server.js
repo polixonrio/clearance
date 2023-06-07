@@ -11,13 +11,14 @@ const LocalStrategy = require("passport-local").Strategy;
 dotenv.config({ path: "config.env" });
 const path = require("path");
 const app = express();
-const port = 8081;
+const port = 8088;
 
 let mysqlx = mysql.createConnection({
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
-  password: "",
-  database: "clearance",
+  port: 3306,
+  password: "my-secret-password",
+  database: "clrs",
 });
 
 mysqlx.connect((err) => {
@@ -34,7 +35,7 @@ app.use(express.json());
 app.set("view engine", "ejs");
 app.use(
   session({
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 86400000  },
     secret: "woot",
     resave: false,
     saveUninitialized: false,
@@ -113,38 +114,79 @@ app.post("/adminlogin", function (req, res, next) {
 });
 
 app.get("/", function (req, res) {
-  res.render("index", { user: req.user });
+  res.redirect("/adminlogin");
 });
 
 
 app.get("/adminlogin", function (req, res) {
   if (req.session.username) {
-    res.redirect("/excelupload");
   } else {
     res.render("adminlogin", { message: req.flash("error") });
   }
 });
 app.get("/excelupload", ensureAuthenticated, (req, res) => {
-  res.render("excelupload");
+  const errorFlashMessage = req.flash("error");
+  console.log("lnmf");
+  console.log(errorFlashMessage);
+  const successFlashMessage = req.flash("success");
+  res.render("excelupload", {
+    errorFlashMessage: errorFlashMessage,
+    successFlashMessage: successFlashMessage,
+  });
 });
 
-app.use(fileUpload());
+app.use(fileUpload({
+  limits: { fileSize: 50 * 1024 * 1024 }, // Maximum file size (50MB)
+  useTempFiles: true,
+  tempFileDir: path.join(__dirname, "temp"),
+  safeFileNames: true,
+  preserveExtension: true,
+  createParentPath: true,
+  abortOnLimit: true,
+  responseOnLimit: "File size limit has been reached.",
+  fileFilter: (req, file, callback) => {
+    const filetypes = [
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ];
+    if (filetypes.includes(file.mimetype)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Only XLSX files are allowed."));
+    }
+  },
+}));
 
 
 
 app.post("/upload", (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send("No files were uploaded.");
+
+
+  }
+
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send("No files were uploaded.");
   }
 
   let uploadedFile = req.files.myfile;
+
+
+  // Check file type
+  if (uploadedFile.mimetype !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+    req.flash("error", "Only XLSX files are allowed.");
+    return res.redirect("/excelupload");
+  }
+
+
   let uploadPath = path.join(__dirname, "uploads", "testexcel.xlsx");
 
   uploadedFile.mv(uploadPath, (err) => {
     if (err) {
       // Error occurred while saving the file
       console.error(err);
-      return res.status(500).send("Error occurred while uploading the file.");
+      req.flash("error", "Error occurred while uploading the file.");
+    return res.redirect("/excelupload");
     }
 
     let workbook = xlsx.readFile(uploadPath);
@@ -177,16 +219,23 @@ app.post("/upload", (req, res) => {
       if (err) {
         // Error occurred while inserting data
         
-        const errorMessage = err.sqlMessage;
-        const errorHTML = `<div class="error-message">
-        <span class="error-icon">&#9888;</span>
-        <span class="error-text">${errorMessage}</span>
-    </div>`;
-return res.status(500).send(`Error occurred while inserting data to the database: ${errorHTML}`);
+    //     const errorMessage = err.sqlMessage;
+    //     const errorHTML = `<div class="error-message">
+    //     <span class="error-icon">&#9888;</span>
+    //     <span class="error-text">${errorMessage}</span>
+    // </div>`;
+    console.error(err);
+    const errorMessage = err.sqlMessage;
+    req.flash(
+      "error",
+      `Error occurred while inserting data to the database: ${errorMessage}`
+    );
+    return res.redirect("/excelupload");
   
       }
 
-      res.send("File uploaded and data inserted to the database.");
+      req.flash("success", "File uploaded and data inserted to the database.");
+  return res.redirect("/excelupload");
     });
   });
 });

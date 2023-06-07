@@ -18,10 +18,11 @@ const app = express();
 const port = 8089;
 
 let mysqlx = mysql.createConnection({
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
-  password: "",
-  database: "clearance",
+  port: 3306,
+  password: "my-secret-password",
+  database: "clrs",
 });
 
 mysqlx.connect((err) => {
